@@ -25,6 +25,12 @@ namespace ft
 		//reverse_iterator
 		//const_reverse_iterator
 
+		vector();
+		explicit vector( const Allocator& alloc );
+		explicit vector( size_type count,
+						 const T& value = T(),
+						 const Allocator& alloc = Allocator());
+
 
 	};
 
