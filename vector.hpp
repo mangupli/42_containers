@@ -1,17 +1,21 @@
 #ifndef VECTOR_H
 #define VECTOR_H
 
+#include <memory>
+
 namespace ft
 {
-	template < class T, class Allocator = std::allocator<T> >
+	template < class T, class Alloc = std::allocator<T> >
 	class vector
 	{
-	public:
 
-		//---------------------------MEMBER TYPES-------------------------------
+	public:
+/*
+*---------------------------MEMBER TYPES-------------------------------
+*/
 
 		typedef T				value_type;
-		typedef Allocator		allocator_type;
+		typedef Alloc		allocator_type;
 		typedef size_t			size_type;
 		typedef ptrdiff_t		difference_type;
 
@@ -25,14 +29,71 @@ namespace ft
 		//reverse_iterator
 		//const_reverse_iterator
 
-		vector();
-		explicit vector( const Allocator& alloc );
-		explicit vector( size_type count,
-						 const T& value = T(),
-						 const Allocator& alloc = Allocator());
+
+	private:
+
+		pointer			_ptr;
+		size_type		_capacity;
+		size_type		_size;
+		allocator_type	_alloc;
+
+	public:
+
+/*
+ * ---------------------------CONSTRUCTORS--------------------------------------
+ */
+
+		explicit vector (const allocator_type& alloc = allocator_type());
+		explicit vector (size_type n, const value_type& val = value_type(),
+						 const allocator_type& alloc = allocator_type());
+
+		template <class InputIterator>
+		vector (InputIterator first, InputIterator last,
+						const allocator_type& alloc = allocator_type());
+
+		vector (const vector& x);
+
+/*
+ * -----------------------------CAPACITY----------------------------------------
+ */
+
+		size_type		max_size() const;
+		bool			empty() const;
+		size_type		size() const;
+		void			reserve( size_type new_cap );
+		size_type		capacity() const;
+
+
+
+
+
 
 
 	};
+
+/*
+ * ---------------------------CONSTRUCTORS--------------------------------------
+ */
+
+	template < typename T, typename Alloc>
+	vector<T, Alloc>::vector(const allocator_type& alloc): _alloc(alloc) {}
+
+
+
+
+/*
+ * -----------------------------CAPACITY----------------------------------------
+ */
+
+	template < typename T, typename Alloc>
+	typename vector<T, Alloc>::size_type
+	vector<T, Alloc>::max_size() const { return _alloc.max_size(); }
+
+	template < typename T, typename Alloc>
+	bool vector<T, Alloc>::empty() const { return _alloc.max_size(); }
+
+
+
 
 
 

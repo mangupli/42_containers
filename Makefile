@@ -2,7 +2,7 @@
 
 NAME = vector
 COMPILER = clang++
-FLAGS = -Wall -Wextra -Werror -Wconversion
+FLAGS = -std=c++98 # -Wall -Wextra -Werror -Wconversion
 
 # Output #
 
