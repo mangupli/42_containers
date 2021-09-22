@@ -13,7 +13,7 @@ int main()
 	std::vector<int> vector;
 
 	// std::cout << *(vector.begin()) << std::endl; // segfault
-	//std::cout << *(vector.end()) << std::endl;  //segfault
+	//std::cout << *(vector.end()) << std::endl;  // segfault
 
 	//std::cout << *(vector.rbegin()) << std::endl; // segfault
 	//std::cout << *(vector.rend()) << std::endl;  //segfault
