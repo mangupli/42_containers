@@ -3,6 +3,8 @@
 
 #include <memory>
 
+#include "random_access_iterator.hpp"
+
 namespace ft
 {
 	template < class T, class Alloc = std::allocator<T> >

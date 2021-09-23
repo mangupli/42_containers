@@ -20,7 +20,7 @@ OBJS = $(addprefix $(OBJS_DIR), $(OBJS_FILES))
 
 SRCS = main.cpp
 
-HEADERS = vector.hpp
+HEADERS = vector.hpp iterator.hpp iterator_traits.hpp random_access_iterator.hpp utils.hpp
 
 # Rules #
 
