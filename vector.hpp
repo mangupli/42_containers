@@ -17,14 +17,19 @@ namespace ft
 */
 
 		typedef T				value_type;
-		typedef Alloc		allocator_type;
+		typedef Alloc		    allocator_type;
 		typedef size_t			size_type;
 		typedef ptrdiff_t		difference_type;
 
-		typedef T &				reference;
-		typedef T const &		const_reference;
-		typedef T *				pointer;
-		typedef T const *		const_pointer;
+		// typedef T &				reference;
+		// typedef T const &		const_reference;
+		// typedef T *				pointer;
+		// typedef T const *		const_pointer;
+
+        typedef allocator_type::reference           reference;
+		typedef allocator_type::const_reference		const_reference;
+		typedef allocator_type::pointer				pointer;
+		typedef allocator_type::const_pointer		const_pointer;
 
 		//iterator
 		//const_iterator
