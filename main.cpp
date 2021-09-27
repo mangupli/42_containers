@@ -23,7 +23,7 @@ int main()
 	std::cout << vector.capacity() << std::endl;
 	std::cout << vector.empty() << std::endl;
 
-	std::vector<int>::iterator it;
+	std::vector<int>::iterator it( void );
 
 
 
