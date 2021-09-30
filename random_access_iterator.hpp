@@ -12,6 +12,8 @@ namespace ft
 
 	public:
 
+		// TODO: затайпдефить длинные названия random_accedd_iterator и референсы на него
+		// TODO: все, что вожможно из implementaеion of member operations запихни сюда, иначе ваще нечитабельно, это не оч
 		typedef typename ft::iterator< ft::random_access_iterator_tag, T >::iterator_category	iterator_category;
 		typedef typename ft::iterator< ft::random_access_iterator_tag, T >::value_type			value_type;
 		typedef typename ft::iterator< ft::random_access_iterator_tag, T >::difference_type		difference_type;
