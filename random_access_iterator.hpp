@@ -13,7 +13,8 @@ namespace ft
 	public:
 
 		// TODO: затайпдефить длинные названия random_accedd_iterator и референсы на него
-		// TODO: все, что вожможно из implementaеion of member operations запихни сюда, иначе ваще нечитабельно, это не оч
+		// TODO: как можно заинхеритеть от бидирекшионала, чтобы возвращался нужный тип
+
 		typedef typename ft::iterator< ft::random_access_iterator_tag, T >::iterator_category	iterator_category;
 		typedef typename ft::iterator< ft::random_access_iterator_tag, T >::value_type			value_type;
 		typedef typename ft::iterator< ft::random_access_iterator_tag, T >::difference_type		difference_type;
@@ -32,26 +33,82 @@ namespace ft
 		random_access_iterator( random_access_iterator const & other ): _ptr(other._ptr) {}
 		~random_access_iterator() {}
 
-		random_access_iterator &		operator=( random_access_iterator const & rhs );
+		random_access_iterator & operator=( random_access_iterator const & rhs )
+		{
+			if (this != &rhs)
+				_ptr = rhs._ptr;
+			return *this;
+		}
 
-		random_access_iterator &		operator++(); 							// версия префикс
-		random_access_iterator &		operator--(); 							// версия префикс
+		random_access_iterator &		operator++() 							// версия префикс
+		{
+			++_ptr;
+			return *this;
+		}
 
-		random_access_iterator			operator++( int ); 						// версия постфикс
-		random_access_iterator			operator--( int );						// версия постфикс
+		random_access_iterator &		operator--() 							// версия префикс
+		{
+			--_ptr;
+			return *this;
+		}
 
-		random_access_iterator			operator+( difference_type n );
-		random_access_iterator			operator-( difference_type n );
+		random_access_iterator			operator++( int ) 						// версия постфикс
+		{
+			random_access_iterator<T> tmp(*this);
+			++tmp;
+			//~*this;
+			return tmp;
+		}
 
-		random_access_iterator &		operator+=( difference_type n );
-		random_access_iterator &		operator-=( difference_type n );
+		random_access_iterator			operator--( int )						// версия постфикс
+		{
+			random_access_iterator<T> tmp(*this);
+			--(tmp);
+			//~*this;
+			return tmp;
+		}
 
-		random_access_iterator &		operator[]( difference_type n );
+		random_access_iterator			operator+( difference_type n )
+		{
+			random_access_iterator<T> tmp(this->ptr + n);
+			//~*this;
+			return tmp;
+		}
+
+		random_access_iterator			operator-( difference_type n )
+		{
+			random_access_iterator<T> tmp(this->ptr - n);
+			//~*this;
+			return tmp;
+		}
+
+		random_access_iterator & operator+=( difference_type n )
+		{
+			this->_prt += n;
+			return *this;
+		}
+
+		random_access_iterator & operator-=( difference_type n )
+		{
+			this->_prt -= n;
+			return *this;
+		}
+
+		random_access_iterator & operator[]( difference_type n )
+		{
+			return *(*this + n);
+		}
 
 		//random_access_iterator const &	operator[]( difference_type n ) const;  ??
 
-		pointer		operator->();
-		reference	operator*();
+		pointer operator->()
+		{
+			return this->_ptr;
+		}
+		reference operator*()
+		{
+			return *(this->_ptr);
+		}
 
 		//*a = t - можно присваивать
 		//(void)i++ equivalent to (void)++i
@@ -67,105 +124,6 @@ namespace ft
 				random_access_iterator<T> const & );
 
 	};
-
-/*
- * -----------------------------------------------------------------------------
- * ---------Implementation of operators of the class random_access_operator-----
- * -----------------------------------------------------------------------------
- */
-
-	template< typename T >
-	random_access_iterator<T> & random_access_iterator<T>::operator=
-			( random_access_iterator const & rhs )
-	{
-		if (this != &rhs)
-			_ptr = rhs._ptr;
-		return *this;
-	}
-
-	template< typename T >
-	random_access_iterator<T> & random_access_iterator<T>::operator++()
-	{
-		++_ptr;
-		return *this;
-	}
-
-	template< typename T >
-	random_access_iterator<T> & random_access_iterator<T>::operator--()
-	{
-		--_ptr;
-		return *this;
-	}
-
-	template< typename T >
-	random_access_iterator<T> random_access_iterator<T>::operator++( int )
-	{
-		random_access_iterator<T> tmp(*this);
-		++(*this);
-		return tmp;
-	}
-
-	template< typename T >
-	random_access_iterator<T> random_access_iterator<T>::operator--( int )
-	{
-		random_access_iterator<T> tmp(*this);
-		--(*this);
-		return tmp;
-	}
-
-	template< typename T >
-	random_access_iterator<T>
-	random_access_iterator<T>::operator+( difference_type n )
-	{
-		random_access_iterator<T> tmp(this->ptr + n);
-		return tmp;
-	}
-
-	template< typename T >
-	random_access_iterator<T>
-	random_access_iterator<T>::operator-( difference_type n )
-	{
-		random_access_iterator<T> tmp(this->ptr - n);
-		return tmp;
-	}
-
-	template< typename T >
-	random_access_iterator<T> &
-	random_access_iterator<T>::operator+=( difference_type n )
-	{
-		this->_prt += n;
-		return *this;
-	}
-
-	template< typename T >
-	random_access_iterator<T> &
-	random_access_iterator<T>::operator-=( difference_type n )
-	{
-		this->_prt -= n;
-		return *this;
-	}
-
-	template< typename T >
-	random_access_iterator<T> &
-	random_access_iterator<T>::operator[]( difference_type n )
-	{
-		return *(*this + n);
-	}
-
-	template< typename T >
-	typename random_access_iterator<T>::pointer
-	random_access_iterator<T>::operator->()
-	{
-		return this->_ptr;
-	}
-
-	template< typename T >
-	typename random_access_iterator<T>::reference
-	random_access_iterator<T>::operator*()
-	{
-		return *(this->_ptr);
-	}
-
 
 /*
  * -----------------------------------------------------------------------------
@@ -215,7 +173,6 @@ namespace ft
 		return !(lhs < rhs);
 	}
 
-
 /*
  * -----------------------------------------------------------------------------
  * ---------Arithmetic operators for random_access_operator objects-------------
@@ -246,6 +203,5 @@ namespace ft
 		return iterator - n;
 	}
 }
-
 
 #endif
