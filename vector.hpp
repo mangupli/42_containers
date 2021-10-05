@@ -55,7 +55,7 @@ namespace ft
 						 const allocator_type& alloc = allocator_type());
 
 		template <class InputIterator>
-		vector (InputIterator first, InputIterator last,
+			vector (InputIterator first, InputIterator last,
 						const allocator_type& alloc = allocator_type());
 
 		vector (const vector& x);
@@ -83,7 +83,7 @@ namespace ft
  */
 
 	template < typename T, typename Alloc>
-	vector<T, Alloc>::vector(const allocator_type& alloc): _alloc(alloc) {}
+		vector<T, Alloc>::vector(const allocator_type& alloc): _alloc(alloc) {}
 
 
 
@@ -93,11 +93,11 @@ namespace ft
  */
 
 	template < typename T, typename Alloc>
-	typename vector<T, Alloc>::size_type
-	vector<T, Alloc>::max_size() const { return _alloc.max_size(); }
+		typename vector<T, Alloc>::size_type
+		vector<T, Alloc>::max_size() const { return _alloc.max_size(); }
 
 	template < typename T, typename Alloc>
-	bool vector<T, Alloc>::empty() const { return _alloc.max_size(); }
+		bool vector<T, Alloc>::empty() const { return _alloc.max_size(); }
 
 
 
