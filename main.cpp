@@ -23,6 +23,8 @@ int main()
 	std::cout << vector.capacity() << std::endl;
 	std::cout << vector.empty() << std::endl;
 
+	std::vector<int> newVector(vector.begin(), vector.end());
+
 	std::vector<int>::iterator it( vector.begin() );
 
 	std::cout << "it[10] " << it[112] << std::endl;

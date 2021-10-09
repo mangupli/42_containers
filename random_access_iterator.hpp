@@ -12,7 +12,7 @@ namespace ft
 
 	public:
 
-		// TODO: затайпдефить длинные названия random_accedd_iterator и референсы на него
+		// TODO: затайпдефить длинные названия random_access_iterator и референсы на него
 		// TODO: как можно заинхеритеть от бидирекшионала, чтобы возвращался нужный тип
 
 		typedef typename ft::iterator< ft::random_access_iterator_tag, T >::iterator_category	iterator_category;
@@ -40,19 +40,19 @@ namespace ft
 			return *this;
 		}
 
-		random_access_iterator &		operator++() 							// версия префикс
+		random_access_iterator & operator++() 							// prefix
 		{
 			++_ptr;
 			return *this;
 		}
 
-		random_access_iterator &		operator--() 							// версия префикс
+		random_access_iterator & operator--() 							// prefix
 		{
 			--_ptr;
 			return *this;
 		}
 
-		random_access_iterator			operator++( int ) 						// версия постфикс
+		random_access_iterator operator++( int ) 						// postfix
 		{
 			random_access_iterator<T> tmp(*this);
 			++tmp;
@@ -60,7 +60,7 @@ namespace ft
 			return tmp;
 		}
 
-		random_access_iterator			operator--( int )						// версия постфикс
+		random_access_iterator operator--( int )						// postfix
 		{
 			random_access_iterator<T> tmp(*this);
 			--(tmp);
@@ -68,14 +68,14 @@ namespace ft
 			return tmp;
 		}
 
-		random_access_iterator			operator+( difference_type n )
+		random_access_iterator operator+( difference_type n )
 		{
 			random_access_iterator<T> tmp(this->ptr + n);
 			//~*this;
 			return tmp;
 		}
 
-		random_access_iterator			operator-( difference_type n )
+		random_access_iterator operator-( difference_type n )
 		{
 			random_access_iterator<T> tmp(this->ptr - n);
 			//~*this;
@@ -127,7 +127,7 @@ namespace ft
 
 /*
  * -----------------------------------------------------------------------------
- * ---------Сomparison operators for random_access_operator objects-------------
+ * ----------------------Relational non-member operators------------------------
  * -----------------------------------------------------------------------------
  */
 

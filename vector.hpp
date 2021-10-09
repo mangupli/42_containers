@@ -4,6 +4,7 @@
 #include <memory>
 
 #include "random_access_iterator.hpp"
+#include "reverse_iterator.hpp"
 
 namespace ft
 {
