@@ -1,8 +1,9 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-//namespace ft
-//{
+#include "iterator_traits.hpp"
+
+
 //	struct nullptr_t
 //	{
 //		template<class T>
@@ -14,6 +15,23 @@
 //	};
 //
 //	nullptr_t nullptr;
+
+namespace ft {
+
+	template<class InputIterator>
+			typename iterator_traits<InputIterator>::difference_type
+							distance(InputIterator first, InputIterator last)
+			{
+				typename iterator_traits<InputIterator>::difference_type dist = 0;
+				while (first != last)
+				{
+					++first;
+					++dist;
+				}
+				return dist;
+			}
+
+}
 
 
 

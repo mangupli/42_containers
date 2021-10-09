@@ -5,6 +5,7 @@
 
 #include "random_access_iterator.hpp"
 #include "reverse_iterator.hpp"
+#include "utils.hpp"
 
 namespace ft
 {
@@ -32,10 +33,10 @@ namespace ft
 		typedef typename allocator_type::pointer				pointer;
 		typedef typename allocator_type::const_pointer			const_pointer;
 
-		//iterator
-		//const_iterator
-		//reverse_iterator
-		//const_reverse_iterator
+		typedef random_access_iterator<T>						iterator;
+		typedef random_access_iterator< T const >				const_iterator;
+		typedef reverseIterator<iterator>						reverse_iterator;
+		typedef reverseIterator<const_iterator>					const_reverse_iterator;
 
 
 	private:
@@ -51,15 +52,57 @@ namespace ft
  * ---------------------------CONSTRUCTORS--------------------------------------
  */
 
-		explicit vector (const allocator_type& alloc = allocator_type());
+		explicit vector (const allocator_type& alloc = allocator_type()):
+							_ptr(NULL), _capacity(0), _size(0), _alloc(alloc) {}
+
 		explicit vector (size_type n, const value_type& val = value_type(),
-						 const allocator_type& alloc = allocator_type());
+						 const allocator_type& alloc = allocator_type()):
+						 _capacity(n), _size(n), _alloc(alloc)
+		{
+			_ptr = _alloc.allocate(n);
+			for(int i = 0; i < n; ++i)
+				_alloc.construct(_ptr + i, val);
+			//_ptr + n = NULL; //??
+		}
 
 		template <class InputIterator>
 			vector (InputIterator first, InputIterator last,
-						const allocator_type& alloc = allocator_type());
+						const allocator_type& alloc = allocator_type()) : _alloc(alloc)
+			{
+				_size = distance(first, last);
+				_capacity = _size;
+				for(int i = 0; i < _size; ++i)
+				{
+					_alloc.construct(_ptr + i, *first);
+					++first;
+				}
+			}
 
-		vector (const vector& x);
+		vector (const vector& x): _alloc(x._alloc), _size(x._size), _capacity(x._capacity)
+		{
+			_ptr = _alloc.allocate(_capacity);
+			for(int i = 0; i < _size; ++i)
+				_alloc.construct(_ptr + i, x[i]);
+		}
+
+/*
+* ----------------------Assignment operator-------------------------------------
+*/
+
+		// TODO: finish this - what to do with allocator
+vector& operator=(const vector& x)
+		{
+			if (this != &x)
+			{
+				this->_size = x._size;
+				this->_capacity = x.capacity;
+
+
+
+			}
+			return *this;
+		}
+
 
 /*
  * -----------------------------CAPACITY----------------------------------------
@@ -83,8 +126,7 @@ namespace ft
  * ---------------------------CONSTRUCTORS--------------------------------------
  */
 
-	template < typename T, typename Alloc>
-		vector<T, Alloc>::vector(const allocator_type& alloc): _alloc(alloc) {}
+
 
 
 
@@ -98,9 +140,7 @@ namespace ft
 		vector<T, Alloc>::max_size() const { return _alloc.max_size(); }
 
 	template < typename T, typename Alloc>
-		bool vector<T, Alloc>::empty() const { return _alloc.max_size(); }
-
-
+		bool vector<T, Alloc>::empty() const {};
 
 
 
