@@ -2,6 +2,7 @@
 #include <vector>
 #include "vector.hpp"
 #include "utils.hpp"
+#include "random_access_iterator.hpp"
 
 
 int main()
@@ -10,8 +11,9 @@ int main()
  *---------------------------Default constructor--------------------------------
  */
 
+/*
 
-	int n = 10;
+int n = 10;
 	std::vector<int> vector(n);
 	for(int i = 0; i < n; ++i)
 		vector[i] = i;
@@ -52,12 +54,14 @@ int main()
 
 
 
+
 	std::vector<int> newVector(vector.begin(), vector.end());
 
 	std::vector<int>::iterator it( vector.begin() );
 
 	//std::cout << "it[10] " << it[112] << std::endl;
 
+ */
 
 
 	/*
@@ -77,15 +81,37 @@ int main()
 
 
 
+	ft::vector<int> myVector(10, 42);
 
 
+	std::cout << "ft::size:	" << myVector.size() << std::endl;
+	std::cout << "ft::capacity:	" << myVector.capacity() << std::endl;
+
+	std::cout << "ft::vector[0]:	" << myVector[0] << std::endl;
+
+	myVector[0] = 21;
+
+	std::cout << "ft::vector[0]:	" << myVector[0] << std::endl;
+	std::cout << "*ft::vector.begin():	" << *myVector.begin() << std::endl;
 
 
+	for (int i = 0; i < 10; ++i)
+		myVector[i] = i;
+
+	/*
+		for (int i = 0; i < 10; ++i)
+			std::cout << "ft::vector[" << i << "]:	" << myVector[i] << std::endl;
+	*/
+
+	ft::vector<int>::iterator it = myVector.begin();
+	while (it < myVector.end())
+	{
+		std::cout << *it << std::endl;
+		++it;
+	}
 
 
-
-
-
+	std::vector<int> stdVector(10, 5);
 
 
 

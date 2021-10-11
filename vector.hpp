@@ -65,18 +65,22 @@ namespace ft
 			//_ptr + n = NULL; //??
 		}
 
+		/*
 		template <class InputIterator>
 			vector (InputIterator first, InputIterator last,
 						const allocator_type& alloc = allocator_type()) : _alloc(alloc)
 			{
 				_size = distance(first, last);
 				_capacity = _size;
+				_ptr = _alloc.allocate(_capacity);
 				for(int i = 0; i < _size; ++i)
 				{
 					_alloc.construct(_ptr + i, *first);
 					++first;
 				}
 			}
+		 */
+
 
 		vector (const vector& x): _alloc(x._alloc), _size(x._size), _capacity(x._capacity)
 		{
@@ -123,53 +127,54 @@ namespace ft
 			return *this;
 		}
 
-
-
 /*
  * -----------------------------CAPACITY----------------------------------------
  */
-
 		size_type		max_size() const { return _alloc.max_size(); }
-		bool			empty() const;
-		size_type		size() const;
+		bool			empty() const { return begin() == end(); }
+		size_type		size() const { return _size; }
 		void			reserve( size_type new_cap );
-		size_type		capacity() const;
+		size_type		capacity() const { return _capacity; }
 
 /*
- * ---------------------------ITERATORS--------------------------------------
+ * -----------------------------ITERATORS---------------------------------------
  */
 
-		iterator begin();
-		const_iterator begin() const;
-		iterator end();
-		const_iterator end() const;
-		reverse_iterator rbegin();
-		const_reverse_iterator rbegin() const;
-		reverse_iterator rend();
-		const_reverse_iterator rend() const;
+		iterator				begin() { return iterator(_ptr); }
+		const_iterator			begin() const { return const_iterator(_ptr); }
+		iterator				end() { return iterator(_ptr + _size); }
+		const_iterator			end() const { return const_iterator(_ptr + _size); }
 
+		reverse_iterator		rbegin() { return reverse_iterator(_ptr); }
+		const_reverse_iterator	rbegin() const { return const_reverse_iterator(_ptr); }
+		reverse_iterator		rend() { return reverse_iterator(_ptr + _size); }
+		const_reverse_iterator	rend() const {
+			return const_reverse_iterator(_ptr + _size); }
 
+/*
+ * --------------------------ELEMENT ACCESS-------------------------------------
+ */
 
-
+		reference operator[] (size_type n) { return _ptr[n]; }
+		const_reference operator[] (size_type n) const { return _ptr[n]; }
+		reference at (size_type n)
+		{
+			if (n >= _size)
+				throw std::out_of_range("out of range");
+			return _ptr[n];
+		}
+		const_reference at (size_type n) const
+		{
+			if (n >= _size)
+				throw std::out_of_range("out of range");
+			return _ptr[n];
+		}
+		reference front(){ return *_ptr; }
+		const_reference front() const { return *_ptr; }
+		reference back(){ return _ptr[_size - 1]; }
+		const_reference back() const { return _ptr[_size - 1]; }
 
 	};
-
-
-
-
-
-
-
-
-/*
- * -----------------------------CAPACITY----------------------------------------
- */
-
-
-	template < typename T, typename Alloc>
-		bool vector<T, Alloc>::empty() const {};
-
-
 
 
 
