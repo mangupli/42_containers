@@ -86,35 +86,67 @@ namespace ft
 		}
 
 /*
-* ----------------------Assignment operator-------------------------------------
+* -----------------------------DESTRUCTOR---------------------------------------
+* Destructs the vector.
+* The destructors of the elements are called and the used storage is deallocated.
+* Note, that if the elements are pointers, the pointed-to objects are not destroyed.
 */
 
-		// TODO: finish this - what to do with allocator
-vector& operator=(const vector& x)
+		~vector()
+		{
+			for (int i = 0; i < _size; ++i) // TODO: size or capacity??
+				_alloc.destroy(_ptr + i);
+			_alloc.deallocate(_ptr,_capacity); // TODO:size or capacity?
+		}
+
+/*
+* ----------------------ASSIGNMENT OPERATOR-------------------------------------
+*/
+
+		vector& operator=(const vector& x)
 		{
 			if (this != &x)
 			{
-				this->_size = x._size;
-				this->_capacity = x.capacity;
 
+				for (int i = 0; i < _size; ++i) // TODO: size or capacity??
+					_alloc.destroy(_ptr + i);
+				_alloc.deallocate(_ptr,_capacity); // TODO:size or capacity?
 
+				_size = x._size;
+				_capacity = x.capacity;
+				_alloc = x._alloc;
 
+				_ptr = _alloc.allocate(_capacity);
+				for(int i = 0; i < _size; ++i)
+					_alloc.construct(_ptr + i, x[i]);
 			}
 			return *this;
 		}
+
 
 
 /*
  * -----------------------------CAPACITY----------------------------------------
  */
 
-		size_type		max_size() const;
+		size_type		max_size() const { return _alloc.max_size(); }
 		bool			empty() const;
 		size_type		size() const;
 		void			reserve( size_type new_cap );
 		size_type		capacity() const;
 
+/*
+ * ---------------------------ITERATORS--------------------------------------
+ */
 
+		iterator begin();
+		const_iterator begin() const;
+		iterator end();
+		const_iterator end() const;
+		reverse_iterator rbegin();
+		const_reverse_iterator rbegin() const;
+		reverse_iterator rend();
+		const_reverse_iterator rend() const;
 
 
 
@@ -122,9 +154,7 @@ vector& operator=(const vector& x)
 
 	};
 
-/*
- * ---------------------------CONSTRUCTORS--------------------------------------
- */
+
 
 
 
@@ -135,9 +165,6 @@ vector& operator=(const vector& x)
  * -----------------------------CAPACITY----------------------------------------
  */
 
-	template < typename T, typename Alloc>
-		typename vector<T, Alloc>::size_type
-		vector<T, Alloc>::max_size() const { return _alloc.max_size(); }
 
 	template < typename T, typename Alloc>
 		bool vector<T, Alloc>::empty() const {};
