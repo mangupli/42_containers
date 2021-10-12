@@ -1,8 +1,8 @@
 #include <iostream>
 #include <vector>
-#include "vector.hpp"
-#include "utils.hpp"
+
 #include "random_access_iterator.hpp"
+#include "vector.hpp"
 
 
 int main()
@@ -57,9 +57,9 @@ int n = 10;
 
 	std::vector<int> newVector(vector.begin(), vector.end());
 
-	std::vector<int>::iterator it( vector.begin() );
+	std::vector<int>::iterator itBegin( vector.begin() );
 
-	//std::cout << "it[10] " << it[112] << std::endl;
+	//std::cout << "itBegin[10] " << itBegin[112] << std::endl;
 
  */
 
@@ -103,12 +103,13 @@ int n = 10;
 			std::cout << "ft::vector[" << i << "]:	" << myVector[i] << std::endl;
 	*/
 
-	ft::vector<int>::iterator it = myVector.begin();
-	while (it < myVector.end())
-	{
-		std::cout << *it << std::endl;
-		++it;
-	}
+	ft::vector<int>::iterator itBegin = myVector.begin();
+	ft::vector<int>::iterator itEnd = myVector.end();
+
+	std::cout << "*itBegin:	" << *itBegin << std::endl;
+	std::cout << "*itEnd:	" << *(itEnd - 1) << std::endl;
+
+	std::cout << "itEnd - itBegin -- " << itEnd - itBegin << std::endl;
 
 
 	std::vector<int> stdVector(10, 5);
