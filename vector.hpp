@@ -65,6 +65,7 @@ namespace ft
 			//_ptr + n = NULL; //??
 		}
 
+		//TODO:  разобраться, почему вызывается этот
 		/*
 		template <class InputIterator>
 			vector (InputIterator first, InputIterator last,
@@ -79,7 +80,7 @@ namespace ft
 					++first;
 				}
 			}
-		 */
+
 
 
 		vector (const vector& x): _alloc(x._alloc), _size(x._size), _capacity(x._capacity)

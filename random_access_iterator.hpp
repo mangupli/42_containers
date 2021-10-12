@@ -115,12 +115,12 @@ namespace ft
 		//(void)i++ equivalent to (void)++i
 		//*i++ --- return type reference
 
-		bool operator==( random_access_iterator<T> const & rhs) { return this->_ptr == rhs.ptr; }
-		bool operator!=( random_access_iterator<T> const & rhs) { return this->_ptr != rhs.ptr; }
-		bool operator<( random_access_iterator<T> const & rhs) { return this->_ptr < rhs.ptr; }
-		bool operator<=( random_access_iterator<T> const & rhs) { return this->_ptr <= rhs.ptr; }
-		bool operator>( random_access_iterator<T> const & rhs) { return this->_ptr > rhs.ptr; }
-		bool operator>=( random_access_iterator<T> const & rhs) { return this->_ptr >= rhs.ptr; }
+		bool operator==( random_access_iterator<T> const & rhs) { return this->_ptr == rhs._ptr; }
+		bool operator!=( random_access_iterator<T> const & rhs) { return this->_ptr != rhs._ptr; }
+		bool operator<( random_access_iterator<T> const & rhs) { return this->_ptr < rhs._ptr; }
+		bool operator<=( random_access_iterator<T> const & rhs) { return this->_ptr <= rhs._ptr; }
+		bool operator>( random_access_iterator<T> const & rhs) { return this->_ptr > rhs._ptr; }
+		bool operator>=( random_access_iterator<T> const & rhs) { return this->_ptr >= rhs._ptr; }
 
 
 		friend difference_type operator-( ft::random_access_iterator<T> const & lhs,

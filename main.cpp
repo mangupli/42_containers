@@ -111,9 +111,20 @@ int n = 10;
 
 	std::cout << "itEnd - itBegin -- " << itEnd - itBegin << std::endl;
 
+	int counter = 3;
+	for ( ; itBegin < itEnd; ++itBegin)
+	{
+		*itBegin = counter * 3;
+		++counter;
+	}
+
+	itBegin = myVector.begin();
+
+	for ( ; itBegin < itEnd; ++itBegin)
+		std::cout << "*itBegin:	" << *itBegin << std::endl;
+
 
 	std::vector<int> stdVector(10, 5);
-
 
 
 	return 0;
