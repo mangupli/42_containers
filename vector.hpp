@@ -66,7 +66,7 @@ namespace ft
 		}
 
 		//TODO:  разобраться, почему вызывается этот
-		/*
+/*
 		template <class InputIterator>
 			vector (InputIterator first, InputIterator last,
 						const allocator_type& alloc = allocator_type()) : _alloc(alloc)
@@ -80,7 +80,7 @@ namespace ft
 					++first;
 				}
 			}
-
+*/
 
 
 		vector (const vector& x): _alloc(x._alloc), _size(x._size), _capacity(x._capacity)
@@ -89,6 +89,7 @@ namespace ft
 			for(int i = 0; i < _size; ++i)
 				_alloc.construct(_ptr + i, x[i]);
 		}
+
 
 /*
 * -----------------------------DESTRUCTOR---------------------------------------
