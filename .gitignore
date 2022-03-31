@@ -1,4 +1,8 @@
-/cmake-build-debug
 .idea
 .gitignore
-vector
+.DS_Store
+.vscode
+containers/.DS_Store
+tests/.DS_Store
+test/objs
+a.out
