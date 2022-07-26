@@ -1,6 +1,7 @@
 #ifndef TESTS_HPP
 # define TESTS_HPP
 
+# include <stack>
 # include <vector>
 # include <list>
 # include <deque>
