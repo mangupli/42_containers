@@ -1,8 +1,8 @@
 #include <iostream>
 #include <vector>
 
-#include "random_access_iterator.hpp"
-#include "vector.hpp"
+#include "../containers/random_access_iterator.hpp"
+#include "../containers/vector.hpp"
 
 
 int vector_tests()

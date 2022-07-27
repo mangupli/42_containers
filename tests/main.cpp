@@ -6,7 +6,7 @@
 /*   By: mspyke <mspyke@student.21-school.ru >      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 17:40:32 by mspyke            #+#    #+#             */
-/*   Updated: 2022/07/28 00:04:48 by mspyke           ###   ########.fr       */
+/*   Updated: 2022/07/28 00:07:39 by mspyke           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,6 @@ void print_result_cout(const bool & result, const bool & new_line_needed)
 int main()
 {
 	stack_tests();
-	//vector_tests();
+	vector_tests();
 	return (0);
 }

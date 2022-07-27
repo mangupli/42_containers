@@ -1,6 +1,8 @@
 #ifndef ITERATOR_H
 #define ITERATOR_H
 
+# include <cstddef>
+
 namespace ft
 {
 	template< class Category, class T, class Distance = std::ptrdiff_t,

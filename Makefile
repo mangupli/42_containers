@@ -44,7 +44,7 @@ DIFFS_DIR = ./tests/diffs/
 # Source files --------------------------------------------
 
 SRCS_FILES = main.cpp \
-				stack_tests.cpp
+				stack_tests.cpp vector_tests.cpp
 SRCS_DIR = ./tests/
 SRCS = $(addprefix $(SRCS_DIR), $(SRCS_FILES))
 
