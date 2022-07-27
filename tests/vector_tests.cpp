@@ -5,7 +5,7 @@
 #include "vector.hpp"
 
 
-int main()
+int vector_tests()
 {
 /*
  *---------------------------Default constructor--------------------------------

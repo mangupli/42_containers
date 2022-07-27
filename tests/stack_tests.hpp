@@ -1,3 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   stack_tests.hpp                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mspyke <mspyke@student.21-school.ru >      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/07/27 17:40:37 by mspyke            #+#    #+#             */
+/*   Updated: 2022/07/27 21:58:50 by mspyke           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#ifndef STACK_TESTS_H
+#define STACK_TESTS_H
+
 #include "tests.hpp"
 
 template <class T>
@@ -75,14 +90,20 @@ bool 	compare_and_print_stack_results(
 )
 {
 
+	bool result = true;
+
 	bool check_empty = compare_value(stl_stack.empty(), ft_stack.empty());
 	bool check_size = compare_value(stl_stack.size(), ft_stack.size());
 	bool check_content = compare_content(stl_stack, ft_stack);
 	print_attributes(file, stl_stack, ft_stack);
 
 	if(check_empty == false || check_size == false || check_content == false)
-		return (false);
+		result = false;
 
-	return true;
+	file << (result == true ? "[OK]\n" : "[KO]\n");
+
+	return result;
 }
 
+
+#endif /* STACK_TESTS_H*/

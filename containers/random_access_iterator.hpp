@@ -1,7 +1,7 @@
 #ifndef RANDOM_ACCESS_ITERATOR_H
 #define RANDOM_ACCESS_ITERATOR_H
 
-#include "iterator_traits.hpp"
+
 #include "utils.hpp"
 #include "iterator.hpp"
 
@@ -123,8 +123,8 @@ namespace ft
 		bool operator>=( random_access_iterator<T> const & rhs) { return this->_ptr >= rhs._ptr; }
 
 
-		friend difference_type operator-( ft::random_access_iterator<T> const & lhs,
-				ft::random_access_iterator<T> const & rhs)
+		friend difference_type operator-( random_access_iterator<T> const & lhs,
+				random_access_iterator<T> const & rhs)
 		{
 			return (lhs._ptr - rhs._ptr);
 		}

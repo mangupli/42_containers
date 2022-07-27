@@ -68,6 +68,9 @@ $(OBJS_DIR)%.o: $(SRCS_DIR)%.cpp $(HEADERS)
 	@mkdir -p $(OBJS_DIR)
 	$(COMPILER) $(FLAGS) -c $< -o $@
 
+run: $(NAME)
+	./$(NAME)
+
 clean:
 	@rm -rf $(OBJS_DIR)
 	$(CLEAN)
