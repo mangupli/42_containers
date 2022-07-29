@@ -81,8 +81,12 @@ int n = 10;
 
 
 
-	ft::vector<int> myVector(10, 42);
+	ft::vector<int> myVector(10, 22);
 
+	const unsigned char c = 5;
+	std::cout << ft::check_integral_function(myVector) << std::endl;
+
+/*
 
 	std::cout << "ft::size:	" << myVector.size() << std::endl;
 	std::cout << "ft::capacity:	" << myVector.capacity() << std::endl;
@@ -97,12 +101,12 @@ int n = 10;
 
 	for (int i = 0; i < 10; ++i)
 		myVector[i] = i;
-
+*/
 	/*
 		for (int i = 0; i < 10; ++i)
 			std::cout << "ft::vector[" << i << "]:	" << myVector[i] << std::endl;
 	*/
-
+/*
 	ft::vector<int>::iterator itBegin = myVector.begin();
 	ft::vector<int>::iterator itEnd = myVector.end();
 
@@ -126,6 +130,6 @@ int n = 10;
 
 	std::vector<int> stdVector(10, 5);
 
-
+*/
 	return 0;
 }

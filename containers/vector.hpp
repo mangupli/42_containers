@@ -4,7 +4,6 @@
 #include <memory>
 
 #include "random_access_iterator.hpp"
-#include "reverse_iterator.hpp"
 #include "utils.hpp"
 
 namespace ft
@@ -29,10 +28,10 @@ namespace ft
 		typedef typename allocator_type::pointer				pointer;
 		typedef typename allocator_type::const_pointer			const_pointer;
 
-		typedef random_access_iterator<T>						iterator;
-		typedef random_access_iterator< T const >				const_iterator;
-		typedef reverseIterator<iterator>						reverse_iterator;
-		typedef reverseIterator<const_iterator>					const_reverse_iterator;
+		typedef random_access_iterator<value_type>				iterator;
+		typedef random_access_iterator< value_type const >		const_iterator;
+		typedef reverse_rai_iterator<iterator>					reverse_iterator;
+		typedef reverse_rai_iterator<const_iterator>			const_reverse_iterator;
 
 
 	private:
@@ -41,7 +40,6 @@ namespace ft
 		size_type		_capacity;
 		size_type		_size;
 		allocator_type	_alloc;
-
 	public:
 
 /*
@@ -53,7 +51,9 @@ namespace ft
 
 		explicit vector (size_type n, const value_type& val = value_type(),
 						 const allocator_type& alloc = allocator_type()):
-						 _capacity(n), _size(n), _alloc(alloc)
+						 _capacity(n),
+						 _size(n),
+						 _alloc(alloc)
 		{
 			_ptr = _alloc.allocate(n);
 			for(int i = 0; i < n; ++i)
@@ -61,13 +61,17 @@ namespace ft
 			//_ptr + n = NULL; //??
 		}
 
-		//TODO:  разобраться, почему вызывается этот
-/*
+
 		template <class InputIterator>
 			vector (InputIterator first, InputIterator last,
-						const allocator_type& _alloc = allocator_type()) : _alloc(_alloc)
-			{
-				_size = distance(first, last);
+						const allocator_type& alloc = allocator_type(),
+						typename ft::enable_if< !ft::is_integral<InputIterator>::value >::type * = 0)
+						 : _alloc(alloc) {
+			/**
+			 * TODO: что происходит, если last<first
+			 */
+			
+				_size = ft::distance(first, last);
 				_capacity = _size;
 				_ptr = _alloc.allocate(_capacity);
 				for(int i = 0; i < _size; ++i)
@@ -76,7 +80,7 @@ namespace ft
 					++first;
 				}
 			}
-*/
+
 
 
 		vector (const vector& x): _alloc(x._alloc), _size(x._size), _capacity(x._capacity)

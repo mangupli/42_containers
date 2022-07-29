@@ -6,6 +6,12 @@ STACK		=	stack
 MAP			=	map
 SUFFIX		=	_tests.cpp
 
+# Containers files-----------------------------------------
+
+CONTAINERS_DIR = ./containers/
+CONTAINERS_FILES  = vector.hpp iterator.hpp random_access_iterator.hpp utils.hpp stack.hpp
+CONTAINERS = $(addprefix $(CONTAINERS_DIR), $(CONTAINERS_FILES))
+
 # Compilation ---------------------------------------------
 
 COMPILER = c++
@@ -60,11 +66,11 @@ HEADERS = $(addprefix $(HEADERS_DIR), $(HEADERS_FILES))
 
 all: $(NAME)
 
-$(NAME): $(OBJS)
+$(NAME): $(OBJS) 
 	$(COMPILER) $(OBJS) -o $@
 	$(DONE)
 
-$(OBJS_DIR)%.o: $(SRCS_DIR)%.cpp $(HEADERS)
+$(OBJS_DIR)%.o: $(SRCS_DIR)%.cpp $(HEADERS) $(CONTAINERS)
 	@mkdir -p $(OBJS_DIR)
 	$(COMPILER) $(FLAGS) -c $< -o $@
 
