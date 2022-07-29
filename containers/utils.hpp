@@ -6,7 +6,7 @@
 /*   By: mspyke <mspyke@student.21-school.ru >      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/29 12:08:59 by mspyke            #+#    #+#             */
-/*   Updated: 2022/07/29 14:00:00 by mspyke           ###   ########.fr       */
+/*   Updated: 2022/07/30 01:18:01 by mspyke           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,10 +73,8 @@ bool check_integral_function(T x){
  
 /* end of is_integral*/
 
+
 } /*namespace ft*/
-
-
-
 
 
 #endif /* UTILS_H*/

@@ -159,7 +159,7 @@ allocator_type get_allocator() const { return _alloc; }
 				pointer new_ptr = _alloc.allocate(new_cap);
 				size_type i = 0;
 				try {
-					for(; i < size; ++i){
+					for(; i < _size; ++i){
 						_alloc.construct(new_ptr + i, _ptr[i]);
 				}
 				} catch (...) {
@@ -170,7 +170,7 @@ allocator_type get_allocator() const { return _alloc; }
 					throw;
 				}
 
-				for(size_t i = 0; i < size; ++i){
+				for(size_t i = 0; i < _size; ++i){
 					_alloc.destroy(_ptr + i);
 				}
 				if (_capacity)
@@ -181,15 +181,28 @@ allocator_type get_allocator() const { return _alloc; }
 			}
 		}
 
+/**
+ * @brief Doesn't change the objects that are already there(only when reallocate the memory)
+ * but if sz > _size —> then appends new one with the value
+ * 
+ */
 		void resize(size_type sz, T value = T()){
-			if(sz > capacity) {
-				size_t new_cap = capacity * 2 > sz ? capacity * 2 : sz;
+
+			if(sz > max_size()) {
+				throw std::length_error("std::resize :  sz > max_size()");
+			}
+
+			if(sz > _capacity) {
+				size_t new_cap = _capacity * 2 > sz ? _capacity * 2 : sz;
 				reserve(new_cap);
 			}
 
+			std::cout << "size " << _size << " cap:  " << _capacity << std::endl;
+
 			size_t i = _size;
+
 			try {
-				for(; _size < sz; ++i) {
+				for(; i < sz; ++i) {
 					_alloc.construct(_ptr + i, value);
 				}
 			}
@@ -200,8 +213,8 @@ allocator_type get_allocator() const { return _alloc; }
 				throw;
 			}
 			
-			for(int i = sz; sz < _size; ++i){
-				_alloc.destroy(_ptr + i);
+			for(size_t j = sz; j < _size; ++j){
+				_alloc.destroy(_ptr + j);
 			}
 
 			_size = sz;
@@ -254,11 +267,14 @@ allocator_type get_allocator() const { return _alloc; }
 				size_t new_cap = _capacity == 0? 1 : _capacity * 2;
 				reserve(new_cap);
 			}
-			_alloc.construct(_ptr + _size);
+			_alloc.construct(_ptr + _size, x);
 			++_size;
 		}
 
-		void pop_back();
+		void pop_back(){
+			_alloc.destroy(_ptr + _size - 1);
+			--_size;
+		}
 
 		iterator insert(iterator position, const T& x);
 
@@ -267,13 +283,31 @@ allocator_type get_allocator() const { return _alloc; }
 		template <class InputIterator>
 			void insert(iterator position, InputIterator first, InputIterator last);
 
-		iterator erase(iterator position);
+		iterator erase(iterator position){
+			size_type dist = static_cast<size_type>(ft::distance(begin(), position));
+			std::cout << "dist: " << dist << std::endl;
+			
+			for(size_type i = dist; i < _size - 1; ++i){
+				_alloc.destroy(_ptr + i);
+				_alloc.construct(_ptr + i, *(_ptr + i + 1));
+			}
+			_alloc.destroy(_ptr + _size - 1);
+			--_size;
+		return iterator(_ptr + dist);
+		}
 
-		iterator erase(iterator first, iterator last);
+		iterator erase(iterator first, iterator last){
+			if (first == last) return last;
+		}
 
 		void swap(vector<T,Allocator>&);
 
-		void clear();
+		void clear(){
+			for(size_type i = 0; i < _size; ++i){
+				_alloc.destroy(_ptr + i);
+			}
+			_size = 0;
+		}
 
 	}; /* class vector */
 

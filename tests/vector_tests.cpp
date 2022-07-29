@@ -169,24 +169,25 @@ int n = 10;
 
 // resize test
 
-	std::vector<int> v(3, 22);
+	std::vector<int> v;
+	for(int i = 0; i < 3; ++i) v.push_back(i);
 
-
+	int num = 2;
 	print_std_vector(v);
 
-	v.resize(5);
-
+	std::vector<int>::iterator it = v.begin()+2;
+	v.erase(it);
 	print_std_vector(v);
 
-	ft::vector<int> myVector(3, 22);
+	ft::vector<int> v1;
+	for(int i = 0; i < 3; ++i) v1.push_back(i);
 
-	print_ft_vector(myVector);
+	print_ft_vector(v1);
 
+	ft::vector<int>::iterator it1 = v1.begin()+2;
+	v1.erase(it1);
 
-	v.resize(5);
-
-	print_std_vector(v);
-
+	print_ft_vector(v1);
 
 
 
