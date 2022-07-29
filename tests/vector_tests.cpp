@@ -4,6 +4,28 @@
 #include "../containers/random_access_iterator.hpp"
 #include "../containers/vector.hpp"
 
+template<typename T>
+void print_std_vector(const std::vector<T> & v) {
+	std::cout << "print vector:\n";
+	std::cout << "size: " << v.size() << " capacity: " << v.capacity() << std::endl;
+	typename std::vector<T>::const_iterator it =  v.begin();
+	for(int i = 0; it < v.end(); ++it, ++i){
+		std::cout << "v[" << i << "] = " << *it << std::endl;
+	}
+
+}
+
+template<typename T>
+void print_ft_vector(const ft::vector<T> & v) {
+	std::cout << "print vector:\n";
+	std::cout << "size: " << v.size() << " capacity: " << v.capacity() << std::endl;
+	typename ft::vector<T>::const_iterator it =  v.begin();
+	for(int i = 0; it < v.end(); ++it, ++i){
+		std::cout << "v[" << i << "] = " << *it << std::endl;
+	}
+
+}
+
 
 int vector_tests()
 {
@@ -81,12 +103,8 @@ int n = 10;
 
 
 
-	ft::vector<int> myVector(10, 22);
-
-	const unsigned char c = 5;
-	std::cout << ft::check_integral_function(myVector) << std::endl;
-
 /*
+
 
 	std::cout << "ft::size:	" << myVector.size() << std::endl;
 	std::cout << "ft::capacity:	" << myVector.capacity() << std::endl;
@@ -101,19 +119,19 @@ int n = 10;
 
 	for (int i = 0; i < 10; ++i)
 		myVector[i] = i;
-*/
-	/*
+
+	
 		for (int i = 0; i < 10; ++i)
 			std::cout << "ft::vector[" << i << "]:	" << myVector[i] << std::endl;
-	*/
-/*
+	
+
 	ft::vector<int>::iterator itBegin = myVector.begin();
 	ft::vector<int>::iterator itEnd = myVector.end();
 
 	std::cout << "*itBegin:	" << *itBegin << std::endl;
-	std::cout << "*itEnd:	" << *(itEnd - 1) << std::endl;
+	std::cout << "*itEnd - 1: " << *(itEnd-1) << std::endl;
 
-	std::cout << "itEnd - itBegin -- " << itEnd - itBegin << std::endl;
+	std::cout << "itEnd - itBegin = " << itEnd - itBegin << std::endl;
 
 	int counter = 3;
 	for ( ; itBegin < itEnd; ++itBegin)
@@ -127,9 +145,53 @@ int n = 10;
 	for ( ; itBegin < itEnd; ++itBegin)
 		std::cout << "*itBegin:	" << *itBegin << std::endl;
 
+*/
 
-	std::vector<int> stdVector(10, 5);
+/*
+
+// @brief how capacity and size grows and decrease
+
+	std::vector<int> stdVector;
+
+	stdVector.reserve(10);
+
+	for(int i = 0; i<20; ++i){
+		stdVector.push_back(i);
+		std::cout << stdVector.size() << " " << stdVector.capacity() << std::endl;
+	}
+
+	for(int i = 0; i<20; ++i){
+		stdVector.pop_back();
+		std::cout << stdVector.size() << " " << stdVector.capacity() << std::endl;
+	}
 
 */
+
+// resize test
+
+	std::vector<int> v(3, 22);
+
+
+	print_std_vector(v);
+
+	v.resize(5);
+
+	print_std_vector(v);
+
+	ft::vector<int> myVector(3, 22);
+
+	print_ft_vector(myVector);
+
+
+	v.resize(5);
+
+	print_std_vector(v);
+
+
+
+
+
+
+
 	return 0;
 }
