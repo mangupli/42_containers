@@ -6,7 +6,7 @@
 /*   By: mspyke <mspyke@student.21-school.ru >      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/29 12:08:59 by mspyke            #+#    #+#             */
-/*   Updated: 2022/07/30 01:18:01 by mspyke           ###   ########.fr       */
+/*   Updated: 2022/07/30 13:52:11 by mspyke           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,52 @@ bool check_integral_function(T x){
 }
  
 /* end of is_integral*/
+
+template <class InputIterator, class ForwardIterator>
+ForwardIterator uninitialized_copy(InputIterator first, InputIterator last,
+				   ForwardIterator result) {
+    while (first != last) construct(&*result++, *first++);
+    return result;
+}
+
+template <class ForwardIterator, class T>
+void uninitialized_fill(ForwardIterator first, ForwardIterator last, 
+			const T& x) {
+    while (first != last) construct(&*first++, x);
+}
+
+template <class ForwardIterator, class Size, class T>
+ForwardIterator uninitialized_fill_n(ForwardIterator first, Size n,
+				     const T& x) {
+    while (n--) construct(&*first++, x);
+    return first;
+}
+
+template <class InputIterator, class OutputIterator>
+OutputIterator copy(InputIterator first, InputIterator last,
+		    OutputIterator result) {
+    while (first != last) *result++ = *first++;
+    return result;
+}
+
+template <class BidirectionalIterator1, class BidirectionalIterator2>
+BidirectionalIterator2 copy_backward(BidirectionalIterator1 first, 
+				     BidirectionalIterator1 last, 
+				     BidirectionalIterator2 result) {
+    while (first != last) *--result = *--last;
+    return result;
+}
+
+template <class ForwardIterator, class T>
+void fill(ForwardIterator first, ForwardIterator last, const T& value) {
+    while (first != last) *first++ = value;
+}
+
+template <class OutputIterator, class Size, class T>
+OutputIterator fill_n(OutputIterator first, Size n, const T& value) {
+    while (n-- > 0) *first++ = value;
+    return first;
+}
 
 
 } /*namespace ft*/

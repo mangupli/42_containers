@@ -197,8 +197,6 @@ allocator_type get_allocator() const { return _alloc; }
 				reserve(new_cap);
 			}
 
-			std::cout << "size " << _size << " cap:  " << _capacity << std::endl;
-
 			size_t i = _size;
 
 			try {
@@ -207,7 +205,7 @@ allocator_type get_allocator() const { return _alloc; }
 				}
 			}
 			catch (...){
-				for(size_t j = 0; j < i; ++j){
+				for(size_t j = _size; j < i; ++j){
 						_alloc.destroy(_ptr + j);
 					}
 				throw;
@@ -283,21 +281,48 @@ allocator_type get_allocator() const { return _alloc; }
 		template <class InputIterator>
 			void insert(iterator position, InputIterator first, InputIterator last);
 
+/**
+ * @brief  Removes the element at pos.
+ * 
+ * @details Complexity is Linear: the number of calls to the destructor of T is
+ *  the same as the number of elements erased,
+ *	the assignment operator of T is called the number of times equal to
+ *  the number of elements in the vector after the erased elements 
+ * 
+ * @param position - iterator to the element to remove 
+ * @return Iterator following the last removed element. 
+ */
 		iterator erase(iterator position){
-			size_type dist = static_cast<size_type>(ft::distance(begin(), position));
-			std::cout << "dist: " << dist << std::endl;
-			
-			for(size_type i = dist; i < _size - 1; ++i){
-				_alloc.destroy(_ptr + i);
-				_alloc.construct(_ptr + i, *(_ptr + i + 1));
+
+			if (position + 1 == end()){
+				pop_back();
+				return end();
 			}
-			_alloc.destroy(_ptr + _size - 1);
+			iterator result = copy(position + 1, end(), position);
 			--_size;
-		return iterator(_ptr + dist);
+			_alloc.destroy(_ptr + _size);
+				
+		return result; /** TODO: check the return value*/
 		}
 
 		iterator erase(iterator first, iterator last){
+
+			if (last < first) throw std::logic_error("vector::erase : iterator last < iterator first");
+
 			if (first == last) return last;
+
+			if(last == end()) {
+				while(first != end())
+					pop_back();
+				return end();
+			}
+
+		
+
+
+
+
+
 		}
 
 		void swap(vector<T,Allocator>&);

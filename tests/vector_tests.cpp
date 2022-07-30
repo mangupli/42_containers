@@ -175,9 +175,13 @@ int n = 10;
 	int num = 2;
 	print_std_vector(v);
 
-	std::vector<int>::iterator it = v.begin()+2;
-	v.erase(it);
+	std::vector<int>::iterator it = v.begin()+1;
+	std::cout << "erase calls: " << *(v.erase(it, it+1)) << std::endl;
 	print_std_vector(v);
+
+	std::vector<char> c;
+	//c.erase(c.begin());
+	/*
 
 	ft::vector<int> v1;
 	for(int i = 0; i < 3; ++i) v1.push_back(i);
@@ -189,7 +193,7 @@ int n = 10;
 
 	print_ft_vector(v1);
 
-
+*/
 
 
 
