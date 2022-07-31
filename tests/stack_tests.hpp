@@ -6,17 +6,17 @@
 /*   By: mspyke <mspyke@student.21-school.ru >      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 17:40:37 by mspyke            #+#    #+#             */
-/*   Updated: 2022/07/27 21:58:50 by mspyke           ###   ########.fr       */
+/*   Updated: 2022/07/31 23:37:01 by mspyke           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef STACK_TESTS_H
-#define STACK_TESTS_H
+# define STACK_TESTS_H
 
-#include "tests.hpp"
+# include "tests.hpp"
 
 template <class T>
-bool	compare_content(
+bool	compare_stack_content(
 	std::stack<T> stl_stack,
 	ft::stack<T> ft_stack
 )
@@ -32,7 +32,7 @@ bool	compare_content(
 }
 
 template<class T>
-void	print_attributes(
+void	print_stack_attributes(
 	std::fstream &file,
 	std::stack<T> stl_stack,
 	ft::stack<T> ft_stack
@@ -94,8 +94,8 @@ bool 	compare_and_print_stack_results(
 
 	bool check_empty = compare_value(stl_stack.empty(), ft_stack.empty());
 	bool check_size = compare_value(stl_stack.size(), ft_stack.size());
-	bool check_content = compare_content(stl_stack, ft_stack);
-	print_attributes(file, stl_stack, ft_stack);
+	bool check_content = compare_stack_content(stl_stack, ft_stack);
+	print_stack_attributes(file, stl_stack, ft_stack);
 
 	if(check_empty == false || check_size == false || check_content == false)
 		result = false;

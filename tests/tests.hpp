@@ -6,7 +6,7 @@
 /*   By: mspyke <mspyke@student.21-school.ru >      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 17:44:25 by mspyke            #+#    #+#             */
-/*   Updated: 2022/07/28 00:06:26 by mspyke           ###   ########.fr       */
+/*   Updated: 2022/07/31 23:30:27 by mspyke           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 
 
 # include "../containers/stack.hpp"
+# include "../containers/vector.hpp"
 
 # define RED	"\033[31;1m"
 # define GREEN	"\033[32;1m"
