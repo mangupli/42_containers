@@ -167,36 +167,42 @@ int n = 10;
 
 */
 
-// resize test
+
 
 	std::vector<int> v;
-	for(int i = 0; i < 3; ++i) v.push_back(i);
-
-	int num = 2;
+	for(int i = 0; i < 12; ++i) v.push_back(i);
 	print_std_vector(v);
 
-	std::vector<int>::iterator it = v.begin()+1;
-	std::cout << "erase calls: " << *(v.erase(it, it+1)) << std::endl;
-	print_std_vector(v);
+	std::vector<int> vv;
+	for(int i = 0; i < 12; ++i) vv.push_back(i);
 
-	std::vector<char> c;
-	//c.erase(c.begin());
-	/*
+
+	std::vector<int>::iterator it = vv.begin() + 4;
+
+	v.insert(v.end(), it, vv.end());
+
+	print_std_vector(v);
+	
+
+
+
 
 	ft::vector<int> v1;
-	for(int i = 0; i < 3; ++i) v1.push_back(i);
-
+	for(int i = 0; i < 12; ++i) v1.push_back(i);
 	print_ft_vector(v1);
 
-	ft::vector<int>::iterator it1 = v1.begin()+2;
-	v1.erase(it1);
+	ft::vector<int> vv1;
+	for(int i = 0; i < 12; ++i) vv1.push_back(i);
+
+
+	ft::vector<int>::iterator it1 = vv1.begin() + 4;
+
+	v1.insert(v1.end(), it1, vv1.end());
 
 	print_ft_vector(v1);
+	
 
-*/
-
-
-
+	
 
 	return 0;
 }

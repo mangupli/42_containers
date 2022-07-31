@@ -156,24 +156,11 @@ allocator_type get_allocator() const { return _alloc; }
 			}
 			else if (_capacity < new_cap) {
 				
-				pointer new_ptr = _alloc.allocate(new_cap);
-				size_type i = 0;
-				try {
-					for(; i < _size; ++i){
-						_alloc.construct(new_ptr + i, _ptr[i]);
-				}
-				} catch (...) {
-					for(size_t j = 0; j < i; ++j){
-						_alloc.destroy(new_ptr + j);
-					}
-					_alloc.deallocate(new_ptr, new_cap);
-					throw;
-				}
+				pointer new_ptr = _alloc.allocate(new_cap); /* TODO: what if new_cap == 0 */
+				ft::uninitialized_copy(_alloc, begin(), end(), iterator(new_ptr));
 
-				for(size_t i = 0; i < _size; ++i){
-					_alloc.destroy(_ptr + i);
-				}
-				if (_capacity)
+				ft::destroy(_alloc, begin(), end());
+				if (_capacity) 
 					_alloc.deallocate(_ptr,_capacity);
 
 				_ptr = new_ptr;
@@ -197,20 +184,10 @@ allocator_type get_allocator() const { return _alloc; }
 				reserve(new_cap);
 			}
 
-			size_t i = _size;
-
-			try {
-				for(; i < sz; ++i) {
-					_alloc.construct(_ptr + i, value);
-				}
+			for(size_type i = _size; i < sz; ++i) {
+				_alloc.construct(_ptr + i, value);
 			}
-			catch (...){
-				for(size_t j = _size; j < i; ++j){
-						_alloc.destroy(_ptr + j);
-					}
-				throw;
-			}
-			
+						
 			for(size_t j = sz; j < _size; ++j){
 				_alloc.destroy(_ptr + j);
 			}
@@ -274,12 +251,110 @@ allocator_type get_allocator() const { return _alloc; }
 			--_size;
 		}
 
-		iterator insert(iterator position, const T& x);
+		/**
+		 * @brief inserts value before position
+		 * 
+		 * @param position  iterator before which the content will be inserted. pos may be the end() iterator 
+		 * @param value		element value to insert 
+		 * @return Iterator pointing to the inserted value
+		 */
 
-		void insert(iterator position, size_type n, const T& x);
+		iterator insert(iterator position, const value_type& value){
+			difference_type n = position - begin();
+			if(_size < _capacity) {
+				if (position == end()){
+					push_back(value);
+				}
+				else {
+					_alloc.construct(_ptr + _size, *(_ptr + _size - 1));
+					ft::copy_backward(position, iterator(_ptr + _size - 1), iterator(_ptr + _size));
+					*position = value;
+					++_size;
+				}
+			}
+			else if(_size == _capacity) {
+				size_t new_cap = _capacity == 0? 1 : _capacity * 2;
+				pointer new_ptr = _alloc.allocate(new_cap);
+				ft::uninitialized_copy(_alloc, begin(), position, iterator(new_ptr));
+				_alloc.construct(new_ptr + (position - begin()), value);
+				ft::uninitialized_copy(_alloc, position, end(), iterator(new_ptr + (position - begin()) + 1));
+				ft::destroy(_alloc, begin(), end());
+				if (_capacity)
+					_alloc.deallocate(_ptr, _capacity);
+				
+				_ptr = new_ptr;
+				_capacity = new_cap;
+				++_size;
+			}
+			
+			return iterator(_ptr + n);; /*TODO: check*/
+		}
+
+		void insert(iterator position, size_type n, const T& value) {
+			if(n == 0) return ;
+			if(_capacity - _size >= n) {
+				if(end() - position > n) {
+					ft::uninitialized_copy(_alloc, end() - n, end(), end());
+					ft::copy_backward(position, end() - n, end());
+					ft::fill(position, position + n, value);
+				}
+				else {
+					ft::uninitialized_copy(_alloc, position, end(), position + n);
+					ft::fill(position, end(), value);
+					ft::uninitialized_fill_n(_alloc, end(), n - (end() - position), value);
+				}
+				_size += n;
+			}
+			else {
+				size_type new_cap = _size + ft::max(_size, n);
+				pointer new_ptr = _alloc.allocate(new_cap);
+				ft::uninitialized_copy(_alloc, begin(), position, iterator(new_ptr));
+				ft::uninitialized_fill_n(_alloc, iterator(new_ptr + (position - begin())), n, value);
+				ft::uninitialized_copy(_alloc, position, end(), iterator(new_ptr + (position - begin() + n)));
+				ft::destroy(_alloc, begin(), end());
+				if (_capacity)
+					_alloc.deallocate(_ptr, _capacity);
+				_ptr = new_ptr;
+				_capacity = new_cap;
+				_size += n;
+			}
+		}
 
 		template <class InputIterator>
-			void insert(iterator position, InputIterator first, InputIterator last);
+			void insert(iterator position, InputIterator first, InputIterator last,
+						typename ft::enable_if< !ft::is_integral<InputIterator>::value >::type * = 0){
+
+				if (first == last) return;
+
+				size_type n = static_cast<size_type>(ft::distance(first, last));
+				if (_capacity - _size >= n) {
+					if (end() - position > n) {
+						ft::uninitialized_copy(_alloc, end() - n, end(), end());
+						ft::copy_backward(position, end() - n, end());
+						ft::copy(first, last, position);
+					}
+					else {
+						ft::uninitialized_copy(_alloc, position, end(), position + n);
+						ft::copy(first, first + (end() - position), position);
+						ft::uninitialized_copy(_alloc, first + (end() - position), last, end());
+						}
+				_size += n;
+				}
+				else {
+					size_type new_cap = size() + max(size(), n);
+					pointer new_ptr = _alloc.allocate(new_cap);
+					ft::uninitialized_copy(_alloc, begin(), position, iterator(new_ptr));
+					ft::uninitialized_copy(_alloc, first, last, iterator(new_ptr + (position - begin())));
+					ft::uninitialized_copy(_alloc, position, end(), iterator(new_ptr + (position - begin() + n)));
+					ft::destroy(_alloc, begin(), end());
+					if (_capacity)
+						_alloc.deallocate(_ptr, _capacity);
+					_ptr = new_ptr;
+					_capacity = new_cap;
+					_size += n;
+    			}
+
+			}
 
 /**
  * @brief  Removes the element at pos.
@@ -298,7 +373,7 @@ allocator_type get_allocator() const { return _alloc; }
 				pop_back();
 				return end();
 			}
-			iterator result = copy(position + 1, end(), position);
+			iterator result = ft::copy(position + 1, end(), position);
 			--_size;
 			_alloc.destroy(_ptr + _size);
 				
@@ -317,12 +392,13 @@ allocator_type get_allocator() const { return _alloc; }
 				return end();
 			}
 
+			iterator result = ft::copy(last, end(), first);
+
+			while(result != end())
+					pop_back();
+
+			return result;
 		
-
-
-
-
-
 		}
 
 		void swap(vector<T,Allocator>&);
