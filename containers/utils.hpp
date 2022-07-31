@@ -6,7 +6,7 @@
 /*   By: mspyke <mspyke@student.21-school.ru >      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/29 12:08:59 by mspyke            #+#    #+#             */
-/*   Updated: 2022/07/31 22:40:48 by mspyke           ###   ########.fr       */
+/*   Updated: 2022/08/01 01:34:46 by mspyke           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,16 @@
 
 
 namespace ft {
+
+template <typename T>
+    void swap(T& a, T& b)
+	{
+		T	c;
+
+		c = a;
+		a = b;
+		b = c;
+	}
 
 template<typename T>
 const T& max(const T & a, const T & b){

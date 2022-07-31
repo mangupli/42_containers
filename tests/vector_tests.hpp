@@ -6,7 +6,7 @@
 /*   By: mspyke <mspyke@student.21-school.ru >      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/31 23:28:39 by mspyke            #+#    #+#             */
-/*   Updated: 2022/08/01 00:01:30 by mspyke           ###   ########.fr       */
+/*   Updated: 2022/08/01 00:11:28 by mspyke           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,12 @@ bool	compare_vector_content(
 {
 	typename std::vector<T>::const_iterator stl_it = stl_vector.begin();
     typename ft::vector<T>::const_iterator ft_it = ft_vector.begin();
+
+    if(ft_it != ft_vector.end() && stl_it != stl_vector.end()) {
+        if (stl_vector.front() != ft_vector.front()) return false;
+        if (stl_vector.back() != ft_vector.back()) return false;
+    }
+
     while(ft_it != ft_vector.end() && stl_it != stl_vector.end())
 	{
 		if(*ft_it != *stl_it)

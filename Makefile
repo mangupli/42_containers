@@ -56,7 +56,8 @@ SRCS = $(addprefix $(SRCS_DIR), $(SRCS_FILES))
 
 
 # Source files --------------------------------------------
-HEADERS_FILES = stack_tests.hpp \
+HEADERS_FILES = vector_tests.hpp \
+				stack_tests.hpp \
 					tests.hpp
 HEADERS_DIR = ./tests/
 HEADERS = $(addprefix $(HEADERS_DIR), $(HEADERS_FILES))

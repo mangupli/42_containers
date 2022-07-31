@@ -6,7 +6,7 @@
 /*   By: mspyke <mspyke@student.21-school.ru >      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/31 23:27:17 by mspyke            #+#    #+#             */
-/*   Updated: 2022/07/31 23:27:18 by mspyke           ###   ########.fr       */
+/*   Updated: 2022/08/01 01:41:04 by mspyke           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,6 @@ namespace ft
 			_ptr = _alloc.allocate(n);
 			for(int i = 0; i < n; ++i)
 				_alloc.construct(_ptr + i, val);
-			//_ptr + n = NULL; //??
 		}
 
 
@@ -96,7 +95,7 @@ namespace ft
 
 
 
-		vector (const vector& x): _alloc(x._alloc), _size(x._size), _capacity(x._capacity)
+		vector (const vector& x): _alloc(x._alloc), _size(x._size), _capacity(x._size)
 		{
 			_ptr = _alloc.allocate(_capacity);
 			for(int i = 0; i < _size; ++i)
@@ -133,7 +132,7 @@ namespace ft
 					_alloc.deallocate(_ptr,_capacity); 
 
 				_size = x._size;
-				_capacity = x._capacity;
+				_capacity = x._size;
 				_alloc = x._alloc;
 
 				_ptr = _alloc.allocate(_capacity);
@@ -147,9 +146,42 @@ namespace ft
  */
 
 template <class InputIterator>
-	void assign(InputIterator first, InputIterator last){}
+	void assign(InputIterator first, InputIterator last,
+					typename ft::enable_if< !ft::is_integral<InputIterator>::value >::type * = 0){
+		clear();
+			
+		size_t new_cap = static_cast<size_type>(ft::distance(first, last));
+		if(new_cap <= _capacity){
+			ft::uninitialized_copy(_alloc, first, last, begin());
+			_size = new_cap;
+		}
+		else {
+			if(_capacity)
+				_alloc.deallocate(_ptr, _capacity);
+			pointer new_ptr = _alloc.allocate(new_cap);
+			ft::uninitialized_copy(_alloc, first, last, iterator(new_ptr));
+			_size = new_cap;
+			_ptr = new_ptr;
+			_capacity = new_cap;
+		}		
+	}
 
-void assign(size_type n, const T& u){}
+void assign(size_type n, const T& value){
+	clear();
+	if (n <= _capacity){
+		ft::uninitialized_fill_n(_alloc, begin(), n, value);
+		_size = n;
+	}
+	else {
+		if(_capacity)
+			_alloc.deallocate(_ptr, _capacity);
+		pointer new_ptr = _alloc.allocate(n);
+		ft::uninitialized_fill_n(_alloc, iterator(new_ptr), n, value);
+		_size = n;
+		_ptr = new_ptr;
+		_capacity = n;
+	}				
+}
 
 allocator_type get_allocator() const { return _alloc; }
 
@@ -413,7 +445,13 @@ allocator_type get_allocator() const { return _alloc; }
 		
 		}
 
-		void swap(vector<T,Allocator>&);
+		void swap(vector<T,Allocator>& other) {
+			
+			ft::swap(_ptr, other._ptr);
+			ft::swap(_size, other._size);
+			ft::swap(_capacity, other._capacity);
+			ft::swap(_alloc, other._alloc);
+		}
 
 		void clear(){
 			for(size_type i = 0; i < _size; ++i){
@@ -424,7 +462,10 @@ allocator_type get_allocator() const { return _alloc; }
 
 	}; /* class vector */
 
-
+	template< class T, class Alloc >
+	void swap(ft::vector<T,Alloc>& lhs, ft::vector<T,Alloc>& rhs ) {
+		lhs.swap(rhs);
+	}
 
 	
 } /*namespace ft */

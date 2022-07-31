@@ -6,7 +6,7 @@
 /*   By: mspyke <mspyke@student.21-school.ru >      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 17:44:25 by mspyke            #+#    #+#             */
-/*   Updated: 2022/07/31 23:30:27 by mspyke           ###   ########.fr       */
+/*   Updated: 2022/08/01 00:04:18 by mspyke           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <vector>
 # include <list>
 # include <deque>
+# include <string>
 # include <iostream>
 # include <fstream>
 # include <sys/stat.h>
@@ -31,8 +32,7 @@
 # define YELLOW "\033[33;1m"
 
 # define RESET "\033[0m"
-# define FT 24
-# define STL 42
+
 
 template<class T>
 bool compare_value(const T& value1, const T& value2)
