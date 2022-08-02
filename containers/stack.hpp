@@ -6,14 +6,15 @@
 /*   By: mspyke <mspyke@student.21-school.ru >      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 17:38:00 by mangupli          #+#    #+#             */
-/*   Updated: 2022/07/27 23:54:12 by mspyke           ###   ########.fr       */
+/*   Updated: 2022/08/01 15:23:55 by mspyke           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef STACK_H
 #define STACK_H
 
-#include <vector>
+//#include <vector>
+#include "vector.hpp"
 
 namespace ft
 {
@@ -22,7 +23,7 @@ namespace ft
 	* @tparam Container		The type of the underlying container to use to store the elements.
 	*/
 	
-	template < class T, class Container = std::vector<T> >
+	template < class T, class Container = ft::vector<T> >
 	class stack
 	{		
 

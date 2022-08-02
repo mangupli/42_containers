@@ -6,7 +6,7 @@
 /*   By: mspyke <mspyke@student.21-school.ru >      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 17:44:25 by mspyke            #+#    #+#             */
-/*   Updated: 2022/08/01 00:04:18 by mspyke           ###   ########.fr       */
+/*   Updated: 2022/08/02 13:51:12 by mspyke           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@
 # include "../containers/stack.hpp"
 # include "../containers/vector.hpp"
 
+# include "Foo.class.hpp"
+
 # define RED	"\033[31;1m"
 # define GREEN	"\033[32;1m"
 # define MAGENTA "\033[35;1m"
@@ -41,6 +43,7 @@ bool compare_value(const T& value1, const T& value2)
 }
 
 void print_result_cout(const bool & result, const bool & new_line_needed);
+void print_result_file(std::fstream &file, const bool & result);
 
 
 int	stack_tests();

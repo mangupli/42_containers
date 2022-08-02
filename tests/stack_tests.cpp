@@ -6,7 +6,7 @@
 /*   By: mspyke <mspyke@student.21-school.ru >      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 17:40:16 by mspyke            #+#    #+#             */
-/*   Updated: 2022/07/27 22:02:14 by mspyke           ###   ########.fr       */
+/*   Updated: 2022/08/01 18:57:52 by mspyke           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -227,7 +227,7 @@ int	stack_tests()
 
 		std::vector<int> v(5, 42);
 		
-		const ft::stack<int> ft_stack(v);
+		const ft::stack<int,  std::vector<int> > ft_stack(v);
 		const std::stack<int, std::vector<int> > stl_stack(v);
 
 		result = (stl_stack.top()) == (ft_stack.top());

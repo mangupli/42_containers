@@ -6,7 +6,7 @@
 /*   By: mspyke <mspyke@student.21-school.ru >      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/31 23:28:39 by mspyke            #+#    #+#             */
-/*   Updated: 2022/08/01 00:11:28 by mspyke           ###   ########.fr       */
+/*   Updated: 2022/08/02 15:21:17 by mspyke           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,41 @@ void print_ft_vector(const ft::vector<T> & v) {
 		std::cout << "v[" << i << "] = " << *it << std::endl;
 	}
 }
+
+template <class T, class Alloc>
+bool	vector_comp_operators(const std::vector<T, Alloc> &stl_first, const std::vector<T, Alloc> &stl_second,
+							const ft::vector<T, Alloc> &ft_first, const ft::vector<T, Alloc> &ft_second)
+{
+	bool result;
+	result = ((stl_first < stl_second) == (ft_first < ft_second))  &&
+			((stl_first <= stl_second) == (ft_first <= ft_second)) &&
+			((stl_first > stl_second) == (ft_first > ft_second)) &&
+			((stl_first >= stl_second) == (ft_first >= ft_second)) &&
+			((stl_first == stl_second) == (ft_first == ft_second)) &&
+			((stl_first != stl_second) == (ft_first != ft_second)) ;
+
+	return result;
+}
+
+template <typename Ite_1, typename Ite_2, typename Ite_3, typename Ite_4>
+bool compare_iterators(const Ite_1 &stl_first, const Ite_2 &stl_second, 
+						const Ite_3 &ft_first, const Ite_4 &ft_second, const bool redo = 1)
+{
+	bool result;
+	result = ((stl_first < stl_second) == (ft_first < ft_second))  &&
+			((stl_first <= stl_second) == (ft_first <= ft_second)) &&
+			((stl_first > stl_second) == (ft_first > ft_second)) &&
+			((stl_first >= stl_second) == (ft_first >= ft_second)) &&
+			((stl_first == stl_second) == (ft_first == ft_second)) &&
+			((stl_first != stl_second) == (ft_first != ft_second)) ;
+
+
+	if (redo)
+		result = result && (compare_iterators(stl_second, stl_first, ft_second, ft_first, 0));
+		
+	return result;
+}
+
 
 template <class T>
 bool	compare_vector_content(
@@ -75,8 +110,8 @@ void	print_vector_attributes(
     file << "Capacity    : " << stl_vector.capacity() << std::endl;
     file << "Content     : [";
 
-    int count = 0;
-    int stl_size = stl_vector.size();
+    size_t count = 0;
+    size_t stl_size = stl_vector.size();
 	while (count < stl_size && count < 10)
     {
 		file << stl_vector[count];
@@ -97,7 +132,7 @@ void	print_vector_attributes(
     file << "Content     : [";
 
     count = 0;
-    int ft_size = ft_vector.size();
+    size_t ft_size = ft_vector.size();
 	while (count < ft_size && count < 10)
     {
 		file << ft_vector[count];
@@ -113,26 +148,32 @@ void	print_vector_attributes(
 }
 
 template <class T>
+bool 	compare_vector_content_and_attributes(
+	const std::vector<T>& stl_vector,
+	const ft::vector<T>& ft_vector){
+
+	bool result = true;
+	bool check_empty = compare_value(stl_vector.empty(), ft_vector.empty());
+	bool check_size = compare_value(stl_vector.size(), ft_vector.size());
+    bool check_capacity = compare_value(stl_vector.capacity(), ft_vector.capacity());
+	bool check_content = compare_vector_content(stl_vector, ft_vector);
+	if(check_empty == false || check_size == false || check_content == false \
+                    || check_capacity == false)
+		result = false;
+	
+	return result;
+}
+
+template <class T>
 bool 	compare_and_print_vector_results(
 	std::fstream &file,
 	const std::vector<T>& stl_vector,
 	const ft::vector<T>& ft_vector
 )
 {
-
-	bool result = true;
-
-	bool check_empty = compare_value(stl_vector.empty(), ft_vector.empty());
-	bool check_size = compare_value(stl_vector.size(), ft_vector.size());
-    bool check_capacity = compare_value(stl_vector.capacity(), ft_vector.capacity());
-	bool check_content = compare_vector_content(stl_vector, ft_vector);
+	bool result = compare_vector_content_and_attributes(stl_vector, ft_vector);
 	print_vector_attributes(file, stl_vector, ft_vector);
-
-	if(check_empty == false || check_size == false || check_content == false \
-                    || check_capacity == false)
-		result = false;
-
-	file << (result == true ? "[OK]\n" : "[KO]\n");
+	print_result_file(file, result);
 
 	return result;
 }

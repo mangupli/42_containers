@@ -6,7 +6,7 @@
 /*   By: mspyke <mspyke@student.21-school.ru >      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 17:40:37 by mspyke            #+#    #+#             */
-/*   Updated: 2022/07/31 23:37:01 by mspyke           ###   ########.fr       */
+/*   Updated: 2022/08/01 15:17:43 by mspyke           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void	print_stack_attributes(
     file << "Size        : " << stl_stack.size() << std::endl;
     file << "Content     : [";
 
-    int count = 0;
+    size_t count = 0;
 	while (stl_stack.size() != 0 && count < 10)
     {
         ++count;

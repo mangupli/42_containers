@@ -14,8 +14,8 @@ CONTAINERS = $(addprefix $(CONTAINERS_DIR), $(CONTAINERS_FILES))
 
 # Compilation ---------------------------------------------
 
-COMPILER = c++
-FLAGS = -std=c++98 # -Wall -Wextra -Werror -Wconversion
+COMPILER = g++
+FLAGS = -std=c++98 -Wall -Wextra -Werror -Wconversion
 SCRIPT_DIFF = bash script_diff.sh
 
 # Сolors for beauty ---------------------------------------
@@ -58,7 +58,8 @@ SRCS = $(addprefix $(SRCS_DIR), $(SRCS_FILES))
 # Source files --------------------------------------------
 HEADERS_FILES = vector_tests.hpp \
 				stack_tests.hpp \
-					tests.hpp
+					tests.hpp \
+						Foo.class.hpp
 HEADERS_DIR = ./tests/
 HEADERS = $(addprefix $(HEADERS_DIR), $(HEADERS_FILES))
 

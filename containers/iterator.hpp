@@ -6,7 +6,7 @@
 /*   By: mspyke <mspyke@student.21-school.ru >      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/28 14:38:45 by mspyke            #+#    #+#             */
-/*   Updated: 2022/07/29 12:06:22 by mspyke           ###   ########.fr       */
+/*   Updated: 2022/08/02 14:44:28 by mspyke           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,17 +70,24 @@ namespace ft
 
 
 	template <class InputIterator, class Distance>
-		void advance(InputIterator& i, Distance n);
-	
-	template <class InputIterator>
-		typename iterator_traits<InputIterator>::difference_type
-				distance(InputIterator first, InputIterator last);
+		void advance(InputIterator& i, Distance n);	
 
 namespace detail {
 	
 	template<class InputIterator>
 		typename ft::iterator_traits<InputIterator>::difference_type 
-		do_distance(InputIterator first, InputIterator last, ft::input_iterator_tag) {
+		do_distance(InputIterator first, InputIterator last, ft::input_iterator_tag ) {
+   			typename ft::iterator_traits<InputIterator>::difference_type result = 0;
+    		while (first != last) {
+        		++first;
+        		++result;
+    		}
+    	return result;
+	}
+
+		template<class InputIterator>
+		typename ft::iterator_traits<InputIterator>::difference_type 
+		do_distance(InputIterator first, InputIterator last, std::input_iterator_tag ) {
    			typename ft::iterator_traits<InputIterator>::difference_type result = 0;
     		while (first != last) {
         		++first;
@@ -89,11 +96,21 @@ namespace detail {
     	return result;
 	}
  
+ 
 	template<class InputIterator>
 		typename ft::iterator_traits<InputIterator>::difference_type 
-   		do_distance(InputIterator first, InputIterator last, ft::random_access_iterator_tag) {
+   		do_distance(InputIterator first, InputIterator last, ft::random_access_iterator_tag ) {
    			return last - first;
 		}
+
+
+		 
+	template<class InputIterator>
+		typename ft::iterator_traits<InputIterator>::difference_type 
+   		do_distance(InputIterator first, InputIterator last, std::random_access_iterator_tag ) {
+   			return last - first;
+		}
+		
  
 } // namespace detail
  
@@ -104,6 +121,23 @@ namespace detail {
                                typename ft::iterator_traits<InputIterator>::iterator_category());
 		}
 
+		
+
+	/*
+
+	    template<class InputIterator>
+        typename ft::iterator_traits<InputIterator>::difference_type
+            distance (InputIterator first, InputIterator last)
+        {
+            typename ft::iterator_traits<InputIterator>::difference_type rtn = 0;
+            while (first != last)
+            {
+                first++;
+                rtn++;
+            }
+            return (rtn);
+        }
+*/
 	/**
 	 * @brief An iterator adaptor that reverses the direction of a given iterator
 	 * 
@@ -198,7 +232,7 @@ namespace detail {
 			 * @return A reference to the element at relative location
 			 */
 			reference operator[](difference_type n) const {
-				return iter_base[-n-1];
+				return (*(*this + n));
 			}
 			
 }; /*class reverse_rai_iterator*/
@@ -209,29 +243,59 @@ template <class Iterator>
 		return lhs.base() == rhs.base();
 	}
 	
-template <class Iterator>
+	template <class ItL, class ItR>
+	inline bool operator==(const reverse_rai_iterator<ItL>& lhs, const reverse_rai_iterator<ItR>& rhs){
+		return lhs.base() == rhs.base();
+	}
+
+	template <class Iterator>
 	inline bool operator<(const reverse_rai_iterator<Iterator>& lhs, const reverse_rai_iterator<Iterator>& rhs){
+		return rhs.base() < lhs.base();
+	}
+
+	template <class ItL, class ItR>
+	inline bool operator<(const reverse_rai_iterator<ItL>& lhs, const reverse_rai_iterator<ItR>& rhs){
 		return rhs.base() < lhs.base();
 	}
 
 template <class Iterator>
 	inline bool operator!=(const reverse_rai_iterator<Iterator>& lhs, const reverse_rai_iterator<Iterator>& rhs){
-		return lhs.base() != rhs.base();
-	}
-	
-template <class Iterator>
-	inline bool operator>(const reverse_rai_iterator<Iterator>& lhs, const reverse_rai_iterator<Iterator>& rhs){
-		return lhs.base() < rhs.base();
-	}
-	
-template <class Iterator>
-	inline bool operator>=(const reverse_rai_iterator<Iterator>& lhs, const reverse_rai_iterator<Iterator>& rhs){
-		return lhs.base() <= rhs.base();
+		return !(lhs == rhs);
 	}
 
-template <class Iterator>
+	template <class ItL, class ItR>
+	inline bool operator!=(const reverse_rai_iterator<ItL>& lhs, const reverse_rai_iterator<ItR>& rhs){
+		return !(lhs == rhs);
+	}
+	
+	template <class Iterator>
+	inline bool operator>(const reverse_rai_iterator<Iterator>& lhs, const reverse_rai_iterator<Iterator>& rhs){
+		return rhs < lhs;
+	}
+
+	template <class ItL, class ItR>
+	inline bool operator>(const reverse_rai_iterator<ItL>& lhs, const reverse_rai_iterator<ItR>& rhs){
+		return rhs < lhs;
+	}
+	
+	template <class Iterator>
+	inline bool operator>=(const reverse_rai_iterator<Iterator>& lhs, const reverse_rai_iterator<Iterator>& rhs){
+		return !(lhs < rhs);
+	}
+
+	template <class ItL, class ItR>
+	inline bool operator>=(const reverse_rai_iterator<ItL>& lhs, const reverse_rai_iterator<ItR>& rhs){
+		return !(lhs < rhs);
+	}
+
+	template <class Iterator>
 	inline bool operator<=(const reverse_rai_iterator<Iterator>& lhs, const reverse_rai_iterator<Iterator>& rhs){
-		return lhs.base() >= rhs.base();
+		return !(rhs < lhs);
+	}
+
+	template <class ItL, class ItR>
+	inline bool operator<=(const reverse_rai_iterator<ItL>& lhs, const reverse_rai_iterator<ItR>& rhs){
+		return !(rhs < lhs);
 	}
 	
 template <class Iterator>
@@ -240,12 +304,18 @@ template <class Iterator>
 						const reverse_rai_iterator<Iterator>& rhs){
 		return rhs.base() - lhs.base();				
 	}
+
+	template <class ItL, class ItR>
+	inline typename reverse_rai_iterator<ItL>::difference_type
+			operator-(const reverse_rai_iterator<ItL>& lhs,
+						const reverse_rai_iterator<ItR>& rhs){
+		return rhs.base() - lhs.base();				
+	}
 						
 template <class Iterator>
 	inline reverse_rai_iterator<Iterator> operator+(typename reverse_rai_iterator<Iterator>::difference_type n,
 											const reverse_rai_iterator<Iterator>& rhs){
-		reverse_rai_iterator<Iterator> tmp(rhs.base()); 	
-		tmp += n;
+		reverse_rai_iterator<Iterator> tmp(rhs.base() - n); 
 		return tmp;				
 	}
 	
