@@ -6,7 +6,7 @@
 /*   By: mspyke <mspyke@student.21-school.ru >      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 17:28:58 by mspyke            #+#    #+#             */
-/*   Updated: 2022/08/03 21:04:15 by mspyke           ###   ########.fr       */
+/*   Updated: 2022/08/04 00:55:26 by mspyke           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@
  *   - Shortest path: all black nodes
  *   - Longest path: alernating red and black
  * 
- *  (2) The header cell is maintained with links not only to the root
+ *  (2) The _header cell is maintained with links not only to the root
  * but also to the leftmost node of the tree, to enable constant time
  * begin(), and to the rightmost node of the tree;
  * 
@@ -72,9 +72,9 @@ protected:
 	struct node 
 	{
 		color_type	color_field;
-		node*		parent_ptr;
-		node*		left_ptr;
-		node*		right_ptr;
+		node*		parent_link;
+		node*		left_link;
+		node*		right_link;
 		
 	};
 		
@@ -100,8 +100,11 @@ public:
 
 protected:
 
-	static node_allocator_type			_nodeAlloc;     
-	static value_allocator_type			_valueAlloc;
+	static node_allocator_type		_node_alloc;     
+	static value_allocator_type		_value_alloc;
+
+	link_type allocate_node(){return _node_alloc.allocate(1);}
+
 
 
 
@@ -109,21 +112,23 @@ protected:
 *-------------------------ACCESSORS--------------------------
 */
 
+protected:
+
 /**
- * @details The header cell is maintained with links not only to the root
+ * @details The _header cell is maintained with links not only to the root
  * but also to the leftmost node of the tree, to enable constant time
  * begin(), and to the rightmost node of the tree;
  * 
  */
 
-    link_type header;  
+    link_type _header;  
 	
-    link_type& root() { return parent(header); }
-    link_type& root() const { return parent(header); }
-    link_type& leftmost() { return left(header); }
-    link_type& leftmost() const { return left(header); }
-    link_type& rightmost() { return right(header); }
-    link_type& rightmost() const { return right(header); }
+    link_type& root() { return parent(_header); }
+    link_type& root() const { return parent(_header); }
+    link_type& leftmost() { return left(_header); }
+    link_type& leftmost() const { return left(_header); }
+    link_type& rightmost() { return right(_header); }
+    link_type& rightmost() const { return right(_header); }
     
 
 /*
@@ -134,8 +139,9 @@ protected:
     bool insert_always;  					// controls whether an element already in the
                          					// tree is inserted again */
 
-	size_type			node_count;			// keeps track of size of tree
-	Compare				key_compare;
+	size_type			_node_count;			// keeps track of size of tree
+	Compare				_key_compare;
+	static size_type	_number_of_trees;
     static link_type	NIL;				//that's where all the leaves are going to point at
 
 /*
@@ -216,7 +222,7 @@ public:
         }
         iterator& operator--() {
             if (color(node) == red && parent(parent(node)) == node)  
-                // check for header
+                // check for _header
                 node = right(node);   // return rightmost
             else if (left(node) != NIL) {
                 link_type y = left(node);
@@ -282,7 +288,7 @@ public:
         }
         const_iterator& operator--() {
             if (color(node) == red && parent(parent(node)) == node)  
-                // check for header
+                // check for _header
                 node = right(node);   // return rightmost
             else if (left(node) != NIL) {
                 link_type y = left(node);
@@ -309,8 +315,125 @@ public:
 	typedef reverse_bidirectional_iterator<iterator> reverse_iterator; 
     typedef reverse_bidirectional_iterator<const_iterator> const_reverse_iterator;
 
+/*
+*-------------Constructors and destrcutors----------------------
+*/
+
+/**
+ *  TODO: придумать, что с аллокаторами 
+ * 
+ */
+
+private:
+
+
+
+    void init() {
+		
+        ++_number_of_trees;
+		
+        _header = allocate_node();
+        color(_header) = red;  // used to distinguish _header from root,                      
+        root() = NIL;
+        leftmost() = _header;
+        rightmost() = _header;
+    }
+
+public:
+    
+    rb_tree(const Compare& comp = Compare(),
+				const value_allocator_type& alloc = value_allocator_type()) 
+           : _node_count(0), _key_compare(comp) { 
+		init();
+    }
+
+	rb_tree(const value_type* first, const value_type* last, 
+            const Compare& comp = Compare(),
+			const value_allocator_type& alloc = value_allocator_type())
+          : _node_count(0), _key_compare(comp) {
+			
+        init();
+        insert(first, last);
+    }
+	
+    rb_tree(const rb_tree<Key, Value, KeyOfValue, Compare, Alloc>& x)
+				: _node_count(x._node_count), 
+                 	_key_compare(x._key_compare) {
+		++_number_of_trees;
+        _header = allocate_node();
+        color(_header) = red;
+        root() = _copy(x.root(), _header);
+        if (root() == NIL) {
+            leftmost() = _header;
+            rightmost() = _header;
+        } else {
+	    	leftmost() = minimum(root());
+            rightmost() = maximum(root());
+        }
+    }
+    ~rb_tree() {
+        //erase(begin(), end());
+        if (--_number_of_trees == 0) {
+            /*deallocate NIL*/
+			NIL = 0;
+        }
+    }
+
+	rb_tree<Key, Value, KeyOfValue, Compare>& 
+        operator=(const rb_tree<Key, Value, KeyOfValue, Compare, Alloc>& x);
+
+
+/*
+*-------------------------ACCESSORS--------------------------
+*/
+
+    Compare key_comp() const { return _key_compare; }
+    iterator begin() { return leftmost(); }
+    const_iterator begin() const { return leftmost(); }
+    iterator end() { return _header; }
+    const_iterator end() const { return _header; }
+    reverse_iterator rbegin() { return reverse_iterator(end()); }
+    const_reverse_iterator rbegin() const { 
+        return const_reverse_iterator(end()); 
+    }
+    reverse_iterator rend() { return reverse_iterator(begin()); }
+    const_reverse_iterator rend() const { 
+        return const_reverse_iterator(begin());
+    } 
+    bool empty() const { return _node_count == 0; }
+    size_type size() const { return _node_count; }
+    size_type max_size() const { 
+        return _node_alloc.max_size(); 
+    }
+
+	void swap(rb_tree<Key, Value, KeyOfValue, Compare, Alloc>& other) {
+			
+			ft::swap(_header, other._header);
+			ft::swap(_node_count, other._node_count);
+			ft::swap(_key_compare, other._key_compare);
+			ft::swap(_value_alloc, other._value_alloc);
+		}
+
 
 }; /*class map*/
+
+template <class Key, class Value, class KeyOfValue, class Compare, class Alloc>
+typename rb_tree<Key, Value, KeyOfValue, Compare, Alloc>::link_type 
+        rb_tree<Key, Value, KeyOfValue, Compare, Alloc>::NIL = 0;
+
+template <class Key, class Value, class KeyOfValue, class Compare, class Alloc>
+typename rb_tree<Key, Value, KeyOfValue, Compare, Alloc>::size_type 
+        rb_tree<Key, Value, KeyOfValue, Compare, Alloc>::_number_of_trees = 0;
+
+template <class Key, class Value, class KeyOfValue, class Compare, class Alloc>
+typename rb_tree<Key, Value, KeyOfValue, Compare, Alloc>::node_allocator_type
+		rb_tree<Key, Value, KeyOfValue, Compare, Alloc>::_node_alloc;
+
+template <class Key, class Value, class KeyOfValue, class Compare, class Alloc>
+typename rb_tree<Key, Value, KeyOfValue, Compare, Alloc>::value_allocator_type
+		rb_tree<Key, Value, KeyOfValue, Compare, Alloc>::_value_alloc;
+
+
 
 
 } /*namespace ft*/
