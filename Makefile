@@ -9,13 +9,13 @@ SUFFIX		=	_tests.cpp
 # Containers files-----------------------------------------
 
 CONTAINERS_DIR = ./containers/
-CONTAINERS_FILES  = vector.hpp iterator.hpp random_access_iterator.hpp utils.hpp stack.hpp
+CONTAINERS_FILES  = vector.hpp iterator.hpp random_access_iterator.hpp utils.hpp stack.hpp map.hpp tree.hpp
 CONTAINERS = $(addprefix $(CONTAINERS_DIR), $(CONTAINERS_FILES))
 
 # Compilation ---------------------------------------------
 
 COMPILER = g++
-FLAGS = -std=c++98 -Wall -Wextra -Werror -Wconversion
+FLAGS = -std=c++98 #-Wall -Wextra -Werror -Wconversion
 SCRIPT_DIFF = bash script_diff.sh
 
 # Сolors for beauty ---------------------------------------
@@ -50,7 +50,7 @@ DIFFS_DIR = ./tests/diffs/
 # Source files --------------------------------------------
 
 SRCS_FILES = main.cpp \
-				stack_tests.cpp vector_tests.cpp
+				stack_tests.cpp vector_tests.cpp map_tests.cpp
 SRCS_DIR = ./tests/
 SRCS = $(addprefix $(SRCS_DIR), $(SRCS_FILES))
 
@@ -58,6 +58,7 @@ SRCS = $(addprefix $(SRCS_DIR), $(SRCS_FILES))
 # Source files --------------------------------------------
 HEADERS_FILES = vector_tests.hpp \
 				stack_tests.hpp \
+					map_tests.hpp \
 					tests.hpp \
 						Foo.class.hpp
 HEADERS_DIR = ./tests/

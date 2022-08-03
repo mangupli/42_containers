@@ -6,12 +6,14 @@
 /*   By: mspyke <mspyke@student.21-school.ru >      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/29 12:08:59 by mspyke            #+#    #+#             */
-/*   Updated: 2022/08/01 15:16:43 by mspyke           ###   ########.fr       */
+/*   Updated: 2022/08/03 20:27:39 by mspyke           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef UTILS_H
 # define UTILS_H
+
+# include "pair.hpp"
 
 # include <stdexcept>
 
@@ -168,6 +170,23 @@ bool lexicographical_compare(InputIt1 first1, InputIt1 last1,
     }
     return (first1 == last1) && (first2 != last2);
 }
+
+template <class T>
+struct less {
+    bool operator()(const T& x, const T& y) const { return x < y; }
+};
+
+template <class Arg, class Result>
+struct unary_function {
+    typedef Arg argument_type;
+    typedef Result result_type;
+};
+
+
+template <class T, class U>
+struct select1st /*: public unary_function<T, U> */{
+    const U& operator()(const T& x) const { return x.first; }
+};
 
 
 

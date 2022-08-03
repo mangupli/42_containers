@@ -6,7 +6,7 @@
 /*   By: mspyke <mspyke@student.21-school.ru >      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 17:44:25 by mspyke            #+#    #+#             */
-/*   Updated: 2022/08/02 13:51:12 by mspyke           ###   ########.fr       */
+/*   Updated: 2022/08/03 17:57:16 by mspyke           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 
 # include "../containers/stack.hpp"
 # include "../containers/vector.hpp"
+# include "../containers/map.hpp"
 
 # include "Foo.class.hpp"
 
@@ -48,6 +49,7 @@ void print_result_file(std::fstream &file, const bool & result);
 
 int	stack_tests();
 int	vector_tests();
+int	map_tests();
 
 
 #endif /*TESTS.HPP*/

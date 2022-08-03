@@ -6,7 +6,7 @@
 /*   By: mspyke <mspyke@student.21-school.ru >      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 17:40:32 by mspyke            #+#    #+#             */
-/*   Updated: 2022/08/02 15:30:28 by mspyke           ###   ########.fr       */
+/*   Updated: 2022/08/03 18:07:37 by mspyke           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,8 @@ void print_result_file(std::fstream &file, const bool & result){
 
 int main()
 {
-	stack_tests();
-	vector_tests();
+	//stack_tests();
+	//vector_tests();
+	map_tests();
 	return (0);
 }

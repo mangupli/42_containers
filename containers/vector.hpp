@@ -6,7 +6,7 @@
 /*   By: mspyke <mspyke@student.21-school.ru >      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/31 23:27:17 by mspyke            #+#    #+#             */
-/*   Updated: 2022/08/02 15:27:24 by mspyke           ###   ########.fr       */
+/*   Updated: 2022/08/02 17:31:45 by mspyke           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -470,7 +470,11 @@ allocator_type get_allocator() const { return _alloc; }
 		lhs.swap(rhs);
 	}
 
-		template< class T, class Alloc >
+/*
+ * --------------------COMPARISON OPERATORS---------------------------------
+ */
+
+	template< class T, class Alloc >
 	bool operator==( const vector<T,Alloc>& lhs,
 			                 const vector<T,Alloc>& rhs ){
 		if (lhs.size() != rhs.size())

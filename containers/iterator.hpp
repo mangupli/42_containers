@@ -6,7 +6,7 @@
 /*   By: mspyke <mspyke@student.21-school.ru >      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/28 14:38:45 by mspyke            #+#    #+#             */
-/*   Updated: 2022/08/02 14:44:28 by mspyke           ###   ########.fr       */
+/*   Updated: 2022/08/03 21:02:11 by mspyke           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -228,7 +228,7 @@ namespace detail {
 			}
 			
 			/**
-			 * @param  n 	- 	position relative to current location. 
+			 * @param  n 	- 	position relative to iter_base location. 
 			 * @return A reference to the element at relative location
 			 */
 			reference operator[](difference_type n) const {
@@ -318,6 +318,63 @@ template <class Iterator>
 		reverse_rai_iterator<Iterator> tmp(rhs.base() - n); 
 		return tmp;				
 	}
+
+	template <class BidirectionalIterator> 
+// Reference = T& 
+// Distance = ptrdiff_t
+	class reverse_bidirectional_iterator : public iterator<typename iterator_traits<BidirectionalIterator>::iterator_category,
+														typename iterator_traits<BidirectionalIterator>::value_type,
+														typename iterator_traits<BidirectionalIterator>::difference_type,
+														typename iterator_traits<BidirectionalIterator>::pointer,
+														typename iterator_traits<BidirectionalIterator>::reference> {
+															
+    typedef reverse_bidirectional_iterator<BidirectionalIterator> self;
+	
+protected:
+    BidirectionalIterator iter_base;
+
+public:
+			typedef BidirectionalIterator									iterator_type;
+			typedef typename iterator_traits<BidirectionalIterator>::difference_type		difference_type;
+			typedef typename iterator_traits<BidirectionalIterator>::reference			reference;
+			typedef typename iterator_traits<BidirectionalIterator>::pointer				pointer;
+	
+
+    reverse_bidirectional_iterator() {}
+    reverse_bidirectional_iterator(BidirectionalIterator x) : iter_base(x) {}
+    iterator_type base() { return iter_base; }
+    reference operator*() const {
+	BidirectionalIterator tmp = iter_base;
+		return *--tmp;
+    }
+	
+    self& operator++() {
+		--iter_base;
+		return *this;
+    }
+    self operator++(int) {
+		self tmp = *this;
+		--iter_base;
+		return tmp;
+    }
+    self& operator--() {
+		++iter_base;
+		return *this;
+    }
+    self operator--(int) {
+		self tmp = *this;
+		++iter_base;
+		return tmp;
+    }
+};
+
+template <class BidirectionalIterator, class T, class Reference,
+          class Distance>
+inline bool operator==(
+    const reverse_bidirectional_iterator<BidirectionalIterator>& x, 
+    const reverse_bidirectional_iterator<BidirectionalIterator>& y) {
+    return x.base() == y.base();
+}
 	
 } /* namespace ft*/
 
