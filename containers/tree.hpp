@@ -6,7 +6,7 @@
 /*   By: mspyke <mspyke@student.21-school.ru >      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 17:28:58 by mspyke            #+#    #+#             */
-/*   Updated: 2022/08/04 00:55:26 by mspyke           ###   ########.fr       */
+/*   Updated: 2022/08/04 23:23:33 by mspyke           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,58 +55,134 @@
 
 namespace ft{
 
+enum color_type {red, black};
 
+template<typename T>
+struct rb_tree_node
+{
+			
+			typedef T					value_type;
+			typedef rb_tree_node<T>*	link_type;
+			
+			value_type	value_field;
+		   	link_type	parent_link;
+			link_type	left_link;
+			link_type	right_link;
+			enum color_type	color_field;
 
-template<typename Key, typename Value, typename KeyOfValue = ft::select1st<Key, Value>,
+			rb_tree_node ()
+			:
+				value_field(),
+				parent_link(0),
+				left_link(0),
+				right_link(0),
+				color_field(red)
+			{}
+			
+
+			/**
+			** @brief Default.
+			** Create a rb_tree_node with default initisialized value.
+			*/
+		   /*
+			rb_tree_node (link_type parent_link = 0,
+					link_type left_link = 0,
+					link_type right = 0)
+			:
+				value(),
+				parent_link(parent_link),
+				left_link(left_link),
+				right(right_link),
+				color_field(red)
+			{}
+			*/
+			
+			/**
+			** @brief Value.
+			** Create a rb_tree_node with value defined by a copy of "val".
+			**
+			** @param val the value to copy.
+			*/
+		   
+			rb_tree_node (const value_type& val, link_type parent_link = 0,
+					link_type left_link = 0, link_type right_link = 0)
+			:
+				value_field(val),
+				parent_link(parent_link),
+				left_link(left_link),
+				right_link(right_link),
+				color_field(black)
+			{}
+
+			rb_tree_node (const rb_tree_node& other)
+			:
+				value_field(other.value_field),
+				parent_link(other.parent_link),
+				left_link(other.left_link),
+				right_link(other.right_link),
+				color_field(other.color_field)
+			{}
+
+			virtual ~rb_tree_node() {}
+
+			/*
+			** @brief Equal operator.
+			** Create a rb_tree_node that a copy of "nd".
+			** The value is initalized by a copy of "nd" value.
+			** Left and right branch point to the same than "nb" branches.
+			**
+			** @param nd the rb_tree_node to copy.
+			** @return *this.
+			*/
+			rb_tree_node &operator=(const rb_tree_node& other)
+			{
+				if (other == *this)
+					return (*this);
+				
+				this->value = other.value;
+				this->parent_link = other.parent_link;
+				this->left_link = other.left_link;
+				this->right_link = other.right_link;
+				
+				return (*this);
+			}
+
+			/*
+			** @brief Compare two rb_tree_node to know
+			** if they contains the same value.
+			*/
+			bool operator==(const rb_tree_node& other)
+			{
+				if (value_field == other.value_field)
+					return (true);
+				return (false);
+			}
+	};
+
+template<typename Key, typename Value/*pair<const Key, T>*/, typename KeyOfValue = ft::select1st<Value, Key>,
 	typename Compare = ft::less<Key>, typename Alloc = std::allocator<Value> >
 class rb_tree
 {
 protected:
-
+	
+	typedef rb_tree_node<Value>									node_type;
+	typedef typename Alloc::template rebind< node_type >::other	node_allocator_type;
+	
 /*
 *-------------------------MEMBER TYPES--------------------------
 */
-	
-	enum color_type { red, black};
 
-	struct node 
-	{
-		color_type	color_field;
-		node*		parent_link;
-		node*		left_link;
-		node*		right_link;
-		
-	};
-		
 public:
+	typedef typename node_allocator_type::pointer			link_type;
+	typedef typename node_allocator_type::size_type			size_type;
+	typedef typename node_allocator_type::difference_type	difference_type;
 
-    typedef Key												key_type;
-    typedef Value											value_type;
+	typedef Key												key_type;
+	typedef Value											value_type;
 	typedef Alloc											value_allocator_type;
-    typedef typename value_allocator_type::pointer			pointer;
-    typedef typename value_allocator_type::reference		reference;
-    typedef typename value_allocator_type::const_reference	const_reference;
-
-	typedef typename Alloc::template rebind< node >::other  node_allocator_type;
-
-    typedef typename node_allocator_type::pointer			link_type;
-    typedef typename node_allocator_type::size_type			size_type;
-    typedef typename node_allocator_type::difference_type	difference_type;
-	
-	
-/*
-*-------------------------ALLOCATORS--------------------------
-*/
-
-protected:
-
-	static node_allocator_type		_node_alloc;     
-	static value_allocator_type		_value_alloc;
-
-	link_type allocate_node(){return _node_alloc.allocate(1);}
-
-
-
+	typedef typename value_allocator_type::pointer			pointer;
+	typedef typename value_allocator_type::reference		reference;
+	typedef typename value_allocator_type::const_reference	const_reference;	
 
 /*
 *-------------------------ACCESSORS--------------------------
@@ -121,62 +197,80 @@ protected:
  * 
  */
 
-    link_type _header;  
+	link_type _header;  
 	
-    link_type& root() { return parent(_header); }
-    link_type& root() const { return parent(_header); }
-    link_type& leftmost() { return left(_header); }
-    link_type& leftmost() const { return left(_header); }
-    link_type& rightmost() { return right(_header); }
-    link_type& rightmost() const { return right(_header); }
-    
+	link_type& root() { return parent(_header); }
+	link_type& root() const { return parent(_header); }
+	link_type& leftmost() { return left(_header); }
+	link_type& leftmost() const { return left(_header); }
+	link_type& rightmost() { return right(_header); }
+	link_type& rightmost() const { return right(_header); }
+	
 
 /*
 *-------------------------MEMBER VARIABLES--------------------------
 */
 
 	/*
-    bool insert_always;  					// controls whether an element already in the
-                         					// tree is inserted again */
+	bool insert_always;  					// controls whether an element already in the
+						 					// tree is inserted again */
 
 	size_type			_node_count;			// keeps track of size of tree
 	Compare				_key_compare;
 	static size_type	_number_of_trees;
-    static link_type	NIL;				//that's where all the leaves are going to point at
+	static link_type	NIL;				//that's where all the leaves are going to point at
+
+/*
+*-------------------------ALLOCATORS--------------------------
+*/
+
+protected:
+
+	/*static?*/ value_allocator_type	_value_alloc; 
+	/*static?*/ node_allocator_type		_node_alloc;
+	      
+	link_type allocate_node()	{return _node_alloc.allocate(1);}
+	pointer	allocate_value()	{return _value_alloc.allocate(1);}
+
+	void construct_node( link_type p, const value_type & value = value_type()){
+		_node_alloc.construct(p, node_type(value));
+	}
+
+	value_allocator_type get_allocator() const {return _value_alloc;}
 
 /*
 *-------------------------NODE GETTERS--------------------------
 */
 
-    static link_type& left(link_type x) { 
-        return (link_type&)((*x).left_link);
-    }
-    static link_type& right(link_type x) {
-        return (link_type&)((*x).right_link); 
-    }
-    static link_type& parent(link_type x) {
-        return (link_type&)((*x).parent_link);
-    }
-    static reference value(link_type x) { return (*x).value_field; }
+	static link_type& left(link_type x) { 
+		return (link_type&)((*x).left_link);
+	}
+	static link_type& right(link_type x) {
+		return (link_type&)((*x).right_link); 
+	}
+	static link_type& parent(link_type x) {
+		return (link_type&)((*x).parent_link);
+	}
+	static reference value(link_type x) { return (*x).value_field; }
 	
-    static const key_type& key(link_type x) {
-        return KeyOfValue()(value(x));
-    }
+	static const key_type& key(link_type x) {
+		return KeyOfValue()(value(x));
+	}
 	
-    static color_type& color(link_type x) { 
-        return (color_type&)(*x).color_field; }
+	static color_type& color(link_type x) { 
+		return (color_type&)(*x).color_field; }
 
 		
-    static link_type minimum(link_type x) {
-        while (left(x) != NIL)
-            x = left(x);
-        return x;
-    }
-    static link_type maximum(link_type x) {
-        while (right(x) != NIL)
-            x = right(x);
-        return x;
-    }
+	static link_type minimum(link_type x) {
+		while (left(x) != NIL)
+			x = left(x);
+		return x;
+	}
+	static link_type maximum(link_type x) {
+		while (right(x) != NIL)
+			x = right(x);
+		return x;
+	}
 
 /*
 *-------------------------ITERATORS--------------------------
@@ -184,227 +278,241 @@ protected:
 
 public:
 
-    class iterator : public ft::iterator< ft::bidirectional_iterator_tag, value_type > {
+	class iterator : public ft::iterator< ft::bidirectional_iterator_tag, value_type > {
 		/*
-    friend class rb_tree<Key, Value, KeyOfValue, Compare>;
-    friend class const_iterator;
+	friend class rb_tree<Key, Value, KeyOfValue, Compare>;
+	friend class const_iterator;
 	*/
 
-    protected:
-        link_type				node;
-        iterator(link_type x) : node(x) {}
+	protected:
+		link_type				node;
+		iterator(link_type x) : node(x) {}
 		
-    public:
-        iterator() {}
-        bool operator==(const iterator& y) const { return node == y.node; }
-        reference operator*() const { return value(node); }
-        iterator& operator++() {
-            if (right(node) != NIL) {
-                node = right(node);
-                while (left(node) != NIL)
-                    node = left(node);
-            }
+	public:
+		iterator() {}
+		bool operator==(const iterator& y) const { return node == y.node; }
+		reference operator*() const { return value(node); }
+		iterator& operator++() {
+			if (right(node) != NIL) {
+				node = right(node);
+				while (left(node) != NIL)
+					node = left(node);
+			}
 			else {
-                link_type y = parent(node);
-                while (node == right(y)) {
-                    node = y;
-                    y = parent(y);
-                }
-                if (right(node) != y) // necessary because of rightmost 
-                    node = y;
-            }
-            return *this;
-        }
-        iterator operator++(int) {
-            iterator tmp = *this;
-            ++*this;
-            return tmp;
-        }
-        iterator& operator--() {
-            if (color(node) == red && parent(parent(node)) == node)  
-                // check for _header
-                node = right(node);   // return rightmost
-            else if (left(node) != NIL) {
-                link_type y = left(node);
-                while (right(y) != NIL)
-                    y = right(y);
-                node = y;
-            } else {
-                link_type y = parent(node);
-                while (node == left(y)) {
-                    node = y;
-                    y = parent(y);
-                }
-                node = y;
-            }
-            return *this;
-        }
-        iterator operator--(int) {
-            iterator tmp = *this;
-            --*this;
-            return tmp;
-        }
-    }; /*class iterator*/
+				link_type y = parent(node);
+				while (node == right(y)) {
+					node = y;
+					y = parent(y);
+				}
+				if (right(node) != y) // necessary because of rightmost 
+					node = y;
+			}
+			return *this;
+		}
+		iterator operator++(int) {
+			iterator tmp = *this;
+			++*this;
+			return tmp;
+		}
+		iterator& operator--() {
+			if (color(node) == red && parent(parent(node)) == node)  
+				// check for _header which is end()
+				node = right(node);   // return rightmost
+			else if (left(node) != NIL) {
+				link_type y = left(node);
+				while (right(y) != NIL)
+					y = right(y);
+				node = y;
+			} else {
+				link_type y = parent(node);
+				while (node == left(y)) {
+					node = y;
+					y = parent(y);
+				}
+				node = y;
+			}
+			return *this;
+		}
+		iterator operator--(int) {
+			iterator tmp = *this;
+			--*this;
+			return tmp;
+		}
+	}; /*class iterator*/
 
 	class const_iterator 
-        : public ft::iterator< ft::bidirectional_iterator_tag, value_type > {
+		: public ft::iterator< ft::bidirectional_iterator_tag, value_type > {
 			/*
-    friend class rb_tree<Key, Value, KeyOfValue, Compare>;
-    friend class iterator;
+	friend class rb_tree<Key, Value, KeyOfValue, Compare>;
+	friend class iterator;
 	*/
-    protected:
-        link_type node;
-        const_iterator(link_type x) : node(x) {}
-    public:
-        const_iterator() {}
-        const_iterator(const iterator& x) : node(x.node) {}
-        bool operator==(const const_iterator& y) const { 
-            return node == y.node; 
-        }
-        bool operator!=(const const_iterator& y) const { 
-            return node != y.node; 
-        }
-        const_reference operator*() const { return value(node); }
-        const_iterator& operator++() {
-            if (right(node) != NIL) {
-                node = right(node);
-                while (left(node) != NIL)
-                    node = left(node);
-            } else {
-                link_type y = parent(node);
-                while (node == right(y)) {
-                    node = y;
-                    y = parent(y);
-                }
-                if (right(node) != y) // necessary because of rightmost 
-                    node = y;
-            }
-            return *this;
-        }
-        const_iterator operator++(int) {
-            const_iterator tmp = *this;
-            ++*this;
-            return tmp;
-        }
-        const_iterator& operator--() {
-            if (color(node) == red && parent(parent(node)) == node)  
-                // check for _header
-                node = right(node);   // return rightmost
-            else if (left(node) != NIL) {
-                link_type y = left(node);
-                while (right(y) != NIL)
-                    y = right(y);
-                node = y;
-            } else {
-                link_type y = parent(node);
-                while (node == left(y)) {
-                    node = y;
-                    y = parent(y);
-                }
-                node = y;
-            }
-            return *this;
-        }
-        const_iterator operator--(int) {
-            const_iterator tmp = *this;
-            --*this;
-            return tmp;
-        }
-    }; /*class const_iterator*/
+	protected:
+		link_type node;
+		const_iterator(link_type x) : node(x) {}
+	public:
+		const_iterator() {}
+		const_iterator(const iterator& x) : node(x.node) {}
+		bool operator==(const const_iterator& y) const { 
+			return node == y.node; 
+		}
+		bool operator!=(const const_iterator& y) const { 
+			return node != y.node; 
+		}
+		const_reference operator*() const { return value(node); }
+		const_iterator& operator++() {
+			if (right(node) != NIL) {
+				node = right(node);
+				while (left(node) != NIL)
+					node = left(node);
+			} else {
+				link_type y = parent(node);
+				while (node == right(y)) {
+					node = y;
+					y = parent(y);
+				}
+				if (right(node) != y) // necessary because of rightmost 
+					node = y;
+			}
+			return *this;
+		}
+		const_iterator operator++(int) {
+			const_iterator tmp = *this;
+			++*this;
+			return tmp;
+		}
+		const_iterator& operator--() {
+			if (color(node) == red && parent(parent(node)) == node)  
+				// check for _header
+				node = right(node);   // return rightmost
+			else if (left(node) != NIL) {
+				link_type y = left(node);
+				while (right(y) != NIL)
+					y = right(y);
+				node = y;
+			} else {
+				link_type y = parent(node);
+				while (node == left(y)) {
+					node = y;
+					y = parent(y);
+				}
+				node = y;
+			}
+			return *this;
+		}
+		const_iterator operator--(int) {
+			const_iterator tmp = *this;
+			--*this;
+			return tmp;
+		}
+	}; /*class const_iterator*/
 
 	typedef reverse_bidirectional_iterator<iterator> reverse_iterator; 
-    typedef reverse_bidirectional_iterator<const_iterator> const_reverse_iterator;
+	typedef reverse_bidirectional_iterator<const_iterator> const_reverse_iterator;
 
 /*
 *-------------Constructors and destrcutors----------------------
 */
 
-/**
- *  TODO: придумать, что с аллокаторами 
- * 
- */
-
 private:
 
-
-
-    void init() {
+	void init() {
 		
-        ++_number_of_trees;
+		++_number_of_trees;
+
+		if (NIL == 0) {
+			NIL = allocate_node();
+			construct_node(NIL);			
+			color(NIL) = black;
+		}
 		
-        _header = allocate_node();
-        color(_header) = red;  // used to distinguish _header from root,                      
-        root() = NIL;
-        leftmost() = _header;
-        rightmost() = _header;
-    }
+		_header = allocate_node();
+		construct_node(_header); //color red used to distinguish _header from root,                      
+		root() = NIL;
+		leftmost() = _header;
+		rightmost() = _header;
+	}
 
 public:
-    
-    rb_tree(const Compare& comp = Compare(),
+	
+	rb_tree(const Compare& comp = Compare(),
 				const value_allocator_type& alloc = value_allocator_type()) 
-           : _node_count(0), _key_compare(comp) { 
+		   : _node_count(0),
+		   _key_compare(comp),
+		   _value_alloc(alloc),
+		   _node_alloc(node_allocator_type()) { 
 		init();
-    }
+	}
 
 	rb_tree(const value_type* first, const value_type* last, 
-            const Compare& comp = Compare(),
+			const Compare& comp = Compare(),
 			const value_allocator_type& alloc = value_allocator_type())
-          : _node_count(0), _key_compare(comp) {
+		  : _node_count(0),
+		  _key_compare(comp),
+		  _value_alloc(alloc),
+		  _node_alloc(node_allocator_type()) {
 			
-        init();
-        insert(first, last);
-    }
+		init();
+		insert(first, last);
+	}
 	
-    rb_tree(const rb_tree<Key, Value, KeyOfValue, Compare, Alloc>& x)
+	rb_tree(const rb_tree<Key, Value, KeyOfValue, Compare, Alloc>& x)
 				: _node_count(x._node_count), 
-                 	_key_compare(x._key_compare) {
+				 	_key_compare(x._key_compare),
+					_value_alloc(x._value_alloc),
+					_node_alloc(x._node_alloc) {
+						
 		++_number_of_trees;
-        _header = allocate_node();
-        color(_header) = red;
-        root() = _copy(x.root(), _header);
-        if (root() == NIL) {
-            leftmost() = _header;
-            rightmost() = _header;
-        } else {
-	    	leftmost() = minimum(root());
-            rightmost() = maximum(root());
-        }
-    }
-    ~rb_tree() {
-        //erase(begin(), end());
-        if (--_number_of_trees == 0) {
-            /*deallocate NIL*/
+		_header = allocate_node();
+		construct_node(_header);
+		root() = _copy(x.root(), _header); //?
+		if (root() == NIL) {
+			leftmost() = _header;
+			rightmost() = _header;
+		} else {
+			leftmost() = minimum(root());
+			rightmost() = maximum(root());
+		}
+	}
+	~rb_tree() {
+		//erase(begin(), end());
+		_node_alloc.destroy(_header);
+		_node_alloc.deallocate(_header, 1);
+		if (--_number_of_trees == 0) {
+			_node_alloc.destroy(NIL);
+			_node_alloc.deallocate(NIL, 1);
 			NIL = 0;
-        }
-    }
-
-	rb_tree<Key, Value, KeyOfValue, Compare>& 
-        operator=(const rb_tree<Key, Value, KeyOfValue, Compare, Alloc>& x);
+		}
+}
+	rb_tree<Key, Value, KeyOfValue, Compare, Alloc>& 
+		operator=(const rb_tree<Key, Value, KeyOfValue, Compare, Alloc>& x);
 
 
 /*
 *-------------------------ACCESSORS--------------------------
 */
 
-    Compare key_comp() const { return _key_compare; }
-    iterator begin() { return leftmost(); }
-    const_iterator begin() const { return leftmost(); }
-    iterator end() { return _header; }
-    const_iterator end() const { return _header; }
-    reverse_iterator rbegin() { return reverse_iterator(end()); }
-    const_reverse_iterator rbegin() const { 
-        return const_reverse_iterator(end()); 
-    }
-    reverse_iterator rend() { return reverse_iterator(begin()); }
-    const_reverse_iterator rend() const { 
-        return const_reverse_iterator(begin());
-    } 
-    bool empty() const { return _node_count == 0; }
-    size_type size() const { return _node_count; }
-    size_type max_size() const { 
-        return _node_alloc.max_size(); 
-    }
+	Compare key_comp() const { return _key_compare; }
+	iterator begin() { return leftmost(); }
+	const_iterator begin() const { return leftmost(); }
+	iterator end() { return _header; }
+	const_iterator end() const { return _header; }
+	reverse_iterator rbegin() { return reverse_iterator(end()); }
+	const_reverse_iterator rbegin() const { 
+		return const_reverse_iterator(end()); 
+	}
+	reverse_iterator rend() { return reverse_iterator(begin()); }
+	const_reverse_iterator rend() const { 
+		return const_reverse_iterator(begin());
+	}
+
+/*
+*-------------------------CAPACITY--------------------------
+*/
+	bool empty() const { return _node_count == 0; }
+	size_type size() const { return _node_count; }
+	size_type max_size() const { 
+		return _node_alloc.max_size(); 
+	}
 
 	void swap(rb_tree<Key, Value, KeyOfValue, Compare, Alloc>& other) {
 			
@@ -412,29 +520,192 @@ public:
 			ft::swap(_node_count, other._node_count);
 			ft::swap(_key_compare, other._key_compare);
 			ft::swap(_value_alloc, other._value_alloc);
+			ft::swap(_node_alloc, other._node_alloc);
+	}
+	
+/*
+*-------------------------INSERT/ERASE--------------------------
+*/
+	
+	//typedef  pair<iterator, bool> pair_iterator_bool; 
+	pair<iterator, bool> insert(const value_type& x){
+		
+	}
+
+	iterator	insert(iterator position, const value_type& x);
+	void		insert(iterator first, iterator last);
+	void		insert(const value_type* first, const value_type* last);
+
+private:
+	void		_erase(link_type n){ /*erases node and its childs without rebalancing*/
+		while(n != NIL){
+			_erase(right(n));
+			link_type tmp = left(n);
+			_node_alloc.destroy(n);
+			_node_alloc.deallocate(n, 1);
+			n = tmp;
 		}
+	};
+	
+	void		erase(iterator position);
+	size_type	erase(const key_type& x);
+	
+	void		erase(iterator first, iterator last);
 
 
-}; /*class map*/
+/*
+*--------------------------SEARCH----------------------------
+*/
+
+iterator find(const key_type& x){
+	link_type last_not_less_than_x = _header; 
+   	link_type current_node = root(); 
+
+   while (current_node != NIL){
+		if (!_key_compare(key(x), x)){
+			last_not_less_than_x = current_node;
+			current_node = left(current_node);
+		} else {
+			current_node = right(current_node);
+		}      
+	}
+	iterator j = iterator(last_not_less_than_x);   
+   	return (j == end() || _key_compare(x, key(j.node))) ? end() : j;
+}
+
+const_iterator find(const key_type& x) const {
+	link_type last_not_less_than_x = _header; 
+   	link_type current_node = root(); 
+
+   while (current_node != NIL){
+		if (!_key_compare(key(current_node), x)){
+			last_not_less_than_x = current_node;
+			current_node = left(current_node);
+		} else {
+			current_node = right(current_node);
+		}      
+	}
+	const_iterator j = const_iterator(last_not_less_than_x);   
+   	return (j == end() || _key_compare(x, key(j.node))) ? end() : j;
+}
+
+size_type count(const key_type& x) const{
+	ft::pair<const_iterator, const_iterator> range = equal_range(x);
+    size_type n = ft::distance(range.first, range.second);
+    return n;
+}
+
+iterator lower_bound(const key_type& x){
+	link_type last_not_less_than_x = _header;
+	link_type current_node = root();
+
+	while(current_node != NIL){
+		if(!_key_compare(key(current_node), x)){
+			last_not_less_than_x = current_node;
+			current_node = left(current_node);
+		} else {
+			current_node = right(current_node);
+		}
+	}
+	return iterator(last_not_less_than_x);
+}
+const_iterator lower_bound(const key_type& x) const{
+	link_type last_not_less_than_x = _header;
+	link_type current_node = root();
+
+	while(current_node != NIL){
+		if(!_key_compare(key(current_node), x)){
+			last_not_less_than_x = current_node;
+			current_node = left(current_node);
+		} else {
+			current_node = right(current_node);
+		}
+	}
+	return const_iterator(last_not_less_than_x);
+}
+iterator upper_bound(const key_type& x){
+	link_type last_greater_than_x = _header;
+	link_type current_node = root();
+
+	while(current_node != NIL){
+		if(key_compare(x, key(current_node))){
+			last_greater_than_x = current_node;
+			current_node = left(current_node);
+		} else {
+			current_node = right(current_node);
+		}
+	}
+	return iterator(last_greater_than_x);
+}
+const_iterator upper_bound(const key_type& x) const{
+	link_type last_greater_than_x = _header;
+	link_type current_node = root();
+
+	while(current_node != NIL){
+		if(key_compare(x, key(current_node))){
+			last_greater_than_x = current_node;
+			current_node = left(current_node);
+		} else {
+			current_node = right(current_node);
+		}
+	}
+	return const_iterator(last_greater_than_x);
+}
+ 
+ft::pair<iterator,iterator> equal_range(const key_type& x){
+	return ft::make_pair<iterator, iterator>(lower_bound(x), upper_bound(x));
+}
+
+pair<const_iterator,const_iterator> equal_range(const key_type& x) const{
+	return ft::make_pair<const_iterator, const_iterator>(lower_bound(x), upper_bound(x));
+}
+
+/*
+*--------------------------ROTATIONS----------------------------
+*/
+
+	void rotate_left(link_type x) {
+		link_type y = right(x);
+		right(x) = left(y);
+		if (left(y) != NIL)
+			parent(left(y)) = x;
+		parent(y) = parent(x);
+		if (x == root())
+			root() = y;
+		else if (x == left(parent(x)))
+			left(parent(x)) = y;
+		else
+			right(parent(x)) = y;
+		left(y) = x;
+		parent(x) = y;
+	}
+
+	void rotate_right(link_type x) {
+		link_type y = left(x);
+		left(x) = right(y);
+		if (right(y) != NIL)
+			parent(right(y)) = x;
+		parent(y) = parent(x);
+		if (x == root())
+			root() = y;
+		else if (x == right(parent(x)))
+			right(parent(x)) = y;
+		else
+			left(parent(x)) = y;
+		right(y) = x;
+		parent(x) = y;
+	}
+
+
+}; /*class tree*/
 
 template <class Key, class Value, class KeyOfValue, class Compare, class Alloc>
 typename rb_tree<Key, Value, KeyOfValue, Compare, Alloc>::link_type 
-        rb_tree<Key, Value, KeyOfValue, Compare, Alloc>::NIL = 0;
+		rb_tree<Key, Value, KeyOfValue, Compare, Alloc>::NIL = 0;
 
 template <class Key, class Value, class KeyOfValue, class Compare, class Alloc>
 typename rb_tree<Key, Value, KeyOfValue, Compare, Alloc>::size_type 
-        rb_tree<Key, Value, KeyOfValue, Compare, Alloc>::_number_of_trees = 0;
-
-template <class Key, class Value, class KeyOfValue, class Compare, class Alloc>
-typename rb_tree<Key, Value, KeyOfValue, Compare, Alloc>::node_allocator_type
-		rb_tree<Key, Value, KeyOfValue, Compare, Alloc>::_node_alloc;
-
-template <class Key, class Value, class KeyOfValue, class Compare, class Alloc>
-typename rb_tree<Key, Value, KeyOfValue, Compare, Alloc>::value_allocator_type
-		rb_tree<Key, Value, KeyOfValue, Compare, Alloc>::_value_alloc;
-
-
-
+		rb_tree<Key, Value, KeyOfValue, Compare, Alloc>::_number_of_trees = 0;
 
 } /*namespace ft*/
 

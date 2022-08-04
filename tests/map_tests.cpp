@@ -6,7 +6,7 @@
 /*   By: mspyke <mspyke@student.21-school.ru >      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/03 17:55:16 by mspyke            #+#    #+#             */
-/*   Updated: 2022/08/03 18:07:25 by mspyke           ###   ########.fr       */
+/*   Updated: 2022/08/04 15:36:36 by mspyke           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,6 @@
 int	map_tests()
 {
 
-    ft::rb_tree<std::string, int> test;
+    ft::rb_tree<std::string, std::pair<std::string, int> > test;
     return 0;
 }
