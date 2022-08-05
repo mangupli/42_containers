@@ -6,7 +6,7 @@
 /*   By: mspyke <mspyke@student.21-school.ru >      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 17:28:58 by mspyke            #+#    #+#             */
-/*   Updated: 2022/08/05 16:16:18 by mspyke           ###   ########.fr       */
+/*   Updated: 2022/08/05 17:53:13 by mspyke           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -181,6 +181,7 @@ public:
 	typedef Value											value_type;
 	typedef Alloc											value_allocator_type;
 	typedef typename value_allocator_type::pointer			pointer;
+	typedef typename value_allocator_type::const_pointer	const_pointer;
 	typedef typename value_allocator_type::reference		reference;
 	typedef typename value_allocator_type::const_reference	const_reference;	
 
@@ -619,22 +620,56 @@ public:
 			comp = _key_compare(KeyOfValue(value), key(current));
 			current = comp ? left(current) : right(current);
 		}
-		iterator prev_node_iter = iterator(parent_node);
+		iterator before = iterator(parent_node);
 		if(comp){
-			if(prev_node_iter == begin())
+			if(before == begin())
 				return ft::pair<iterator, bool>(_insert(current, parent_node, value), true);
 			else 
-				--prev_node_iter;
+				--before;
 		}
-		if(_key_compare(key(prev_node_iter.node)), KeyOfValue(value))
+		if(_key_compare(key(before.node)), KeyOfValue(value))
 			return ft::pair<iterator, bool>(_insert(current, parent, value), true);
-		return ft::pair<iterator, bool>(prev_node_iter, false);
+		return ft::pair<iterator, bool>(before, false);
 	}
 
-	iterator	insert(iterator position, const value_type& x);
-	void		insert(iterator first, iterator last);
-	void		insert(const value_type* first, const value_type* last);
+	iterator	insert(iterator hint, const value_type& value){
+		if (hint == iterator(begin())){
+			if (size() > 0 && key_compare(KeyOfValue()(value), key(hint).node)) {
+				//return _insert(hint.node, hint.node, v);
+				return _insert(hint.node, leftmost(), value);
+			} else
+				return insert(value).first;
+		} else if (hint == iterator(end())){
+				if (key_compare(key(rightmost()), KeyOfValue()(value)))
+					return _insert(NIL, rightmost(), value);
+				else
+					return insert(value).first;
+		} else {
+			iterator before = --hint;
+			if (key_compare(key(before.node), KeyOfValue()(value))
+						&& key_compare(KeyOfValue()(value), key(hint.node))){
+				if (right(before.node) == NIL)
+					return _insert(NIL, before.node, value); 
+				else
+					return _insert(hint.node, hint.node, value);
+			} else
+				return insert(value).first;
+		}
+	}
 
+	
+	void		insert(iterator first, iterator last){
+		while (first != last) {
+			insert(*first);
+			++first;
+		}
+	}
+	
+	void		insert(const value_type* first, const value_type* last){
+		while (first != last) {
+			insert(*first);
+		}
+	}
 private:
 	void		_erase(link_type n){ /*erases node and its childs without rebalancing*/
 		while(n != NIL){

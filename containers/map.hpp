@@ -6,7 +6,7 @@
 /*   By: mspyke <mspyke@student.21-school.ru >      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 17:29:01 by mspyke            #+#    #+#             */
-/*   Updated: 2022/08/04 23:26:00 by mspyke           ###   ########.fr       */
+/*   Updated: 2022/08/05 17:53:55 by mspyke           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ public:
 	typedef typename tree_type::iterator		 			iterator;
 	typedef typename tree_type::const_iterator 				const_iterator;
 	typedef typename tree_type::reverse_iterator			reverse_iterator;
-	typedef typename tree_type::onst_reverse_iterator		const_reverse_iterator;
+	typedef typename tree_type::const_reverse_iterator		const_reverse_iterator;
 	
 
 /*
@@ -121,22 +121,38 @@ public:
 /*
 // 23.3.1.2 element access:
 T& operator[](const key_type& x);
-// modifiers:
-pair<iterator, bool> insert(const value_type& x);
-iterator insert(iterator position, const value_type& x);
+*/
+
+/*
+ * ------------------------MODIFIERS-------------------------------------
+ */
+
+pair<iterator, bool> insert(const value_type& x){
+	return _tree.insert(x);
+}
+
+iterator insert(iterator hint, const value_type& x){
+	return _tree.insert(hint, x);
+}
+
 template <class InputIterator>
 void insert(InputIterator first, InputIterator last);
+
+/*
 void erase(iterator position);
 size_type erase(const key_type& x);
 void erase(iterator first, iterator last);
 void swap(map<Key,T,Compare,Allocator>&);
 void clear();
+*/
+/*
 // observers:
 key_compare key_comp() const;
 value_compare value_comp() const;
 */
+
 /*
- * -------------------------CAPACITY-------------------------------------
+ * -------------------------SEARCH-------------------------------------
  */
 
 iterator find(const key_type& x){
