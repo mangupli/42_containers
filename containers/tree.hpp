@@ -6,7 +6,7 @@
 /*   By: mspyke <mspyke@student.21-school.ru >      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 17:28:58 by mspyke            #+#    #+#             */
-/*   Updated: 2022/08/04 23:23:33 by mspyke           ###   ########.fr       */
+/*   Updated: 2022/08/05 16:16:18 by mspyke           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -228,7 +228,7 @@ protected:
 
 	/*static?*/ value_allocator_type	_value_alloc; 
 	/*static?*/ node_allocator_type		_node_alloc;
-	      
+		  
 	link_type allocate_node()	{return _node_alloc.allocate(1);}
 	pointer	allocate_value()	{return _value_alloc.allocate(1);}
 
@@ -526,10 +526,109 @@ public:
 /*
 *-------------------------INSERT/ERASE--------------------------
 */
+
+private:
+
+	iterator _insert(link_type target_link, link_type parent_node, const Value & value){
+	
+		link_type new_node = allocate_node();
+		construct_node(new_node, value);
+
+		/*update header*/
+		if (parent_node == _header || target_link != NIL || _key_compare(KeyOfValue()(value), key(parent_node))) {
+			left(parent_node) = new_node;  // also makes leftmost() = new_node when parentt_nod == header
+			if (parent_node == _header) {
+				root() = new_node;
+				rightmost() = new_node;
+			} else if (parent_node == leftmost())
+				leftmost() = new_node;   // maintain leftmost() pointing to minimum node
+		} else {
+			right(parent_node) = new_node;
+			if (parent_node == rightmost())
+				rightmost() = new_node;   // maintain rightmost() pointing to maximum node
+		}
+		
+		/*set the links in the new_node*/
+		parent(new_node) = parent_node;
+		left(new_node) = NIL;
+		right(new_node) = NIL;
+		
+		/* start to rebalance and recolor the tree*/
+		target_link = new_node;
+
+		color(target_link) = red; /*the new_node is always red in the beggining*/
+		
+		/*while loop until we don't reach the root or the parent is still red*/
+		link_type uncle;
+		while (target_link != root() && color(parent(target_link)) == red){
+			/*first we need to see which uncle(right or left) is needed*/
+			if (parent(target_link) == left(parent(parent(target_link)))) {
+				uncle = right(parent(parent(target_link)));
+				if (color(uncle) == red) {
+					color(parent(target_link)) = black;
+					color(uncle) = black;
+					color(parent(parent(target_link))) = red;
+					target_link = parent(parent(target_link));
+				} else {
+					if (target_link == right(parent(target_link))) {
+						target_link = parent(target_link);
+						rotate_left(target_link);
+					}
+				color(parent(target_link)) = black;
+				color(parent(parent(target_link))) = red;
+				rotate_right(parent(parent(target_link)));
+			}
+		} else {
+			uncle = left(parent(parent(target_link)));
+			if (color(uncle) == red) {
+				color(parent(target_link)) = black;
+				color(uncle) = black;
+				color(parent(parent(target_link))) = red;
+				target_link = parent(parent(target_link));
+			} else {
+				if (target_link == left(parent(target_link))) {
+					target_link = parent(target_link);
+					rotate_right(target_link);
+				}
+				color(parent(target_link)) = black;
+				color(parent(parent(target_link))) = red;
+				rotate_left(parent(parent(target_link)));
+				}
+			}
+		}
+		/*in case it's the first element in the tree it didn't enter the loop so we change it to black
+		and aldo during the recoloring the root might become red*/
+		color(root()) = black; 
+		++_node_count;
+		return iterator(new_node);
+	}
+
+
+public:
 	
 	//typedef  pair<iterator, bool> pair_iterator_bool; 
-	pair<iterator, bool> insert(const value_type& x){
+	ft::pair<iterator, bool> insert(const value_type& value){
 		
+		link_type parent_node = _header;
+		link_type current = root();
+		
+		bool comp = true;
+
+		while(current != NIL){
+			parent_node = current;
+			comp = _key_compare(KeyOfValue(value), key(current));
+			current = comp ? left(current) : right(current);
+		}
+		iterator prev_node_iter = iterator(parent_node);
+		if(comp){
+			if(prev_node_iter == begin())
+				return ft::pair<iterator, bool>(_insert(current, parent_node, value), true);
+			else 
+				--prev_node_iter;
+		}
+		if(_key_compare(key(prev_node_iter.node)), KeyOfValue(value))
+			return ft::pair<iterator, bool>(_insert(current, parent, value), true);
+		return ft::pair<iterator, bool>(prev_node_iter, false);
 	}
 
 	iterator	insert(iterator position, const value_type& x);
@@ -591,8 +690,8 @@ const_iterator find(const key_type& x) const {
 
 size_type count(const key_type& x) const{
 	ft::pair<const_iterator, const_iterator> range = equal_range(x);
-    size_type n = ft::distance(range.first, range.second);
-    return n;
+	size_type n = ft::distance(range.first, range.second);
+	return n;
 }
 
 iterator lower_bound(const key_type& x){
