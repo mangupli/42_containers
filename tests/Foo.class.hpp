@@ -1,5 +1,5 @@
 #ifndef FOO_CLASS_H
-# define FOOL_CLASS_H
+# define FOO_CLASS_H
 
 # include <iostream>
 # include <string>

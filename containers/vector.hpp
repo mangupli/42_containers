@@ -6,7 +6,7 @@
 /*   By: mspyke <mspyke@student.21-school.ru >      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/31 23:27:17 by mspyke            #+#    #+#             */
-/*   Updated: 2022/08/02 17:31:45 by mspyke           ###   ########.fr       */
+/*   Updated: 2022/08/05 19:22:28 by mspyke           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -335,14 +335,14 @@ allocator_type get_allocator() const { return _alloc; }
 			if(n == 0) return ;
 			if(_capacity - _size >= n) {
 				if(end() - position > static_cast<difference_type>(n)) {
-					ft::uninitialized_copy(_alloc, end() - n, end(), end());
-					ft::copy_backward(position, end() - n, end());
-					ft::fill(position, position + n, value);
+					ft::uninitialized_copy(_alloc, end() - static_cast<difference_type>(n), end(), end());
+					ft::copy_backward(position, end() - static_cast<difference_type>(n), end());
+					ft::fill(position, position + static_cast<difference_type>(n), value);
 				}
 				else {
-					ft::uninitialized_copy(_alloc, position, end(), position + n);
+					ft::uninitialized_copy(_alloc, position, end(), position + static_cast<difference_type>(n));
 					ft::fill(position, end(), value);
-					ft::uninitialized_fill_n(_alloc, end(), n - (end() - position), value);
+					ft::uninitialized_fill_n(_alloc, end(), n - static_cast<size_type>(end() - position), value);
 				}
 				_size += n;
 			}
@@ -351,7 +351,7 @@ allocator_type get_allocator() const { return _alloc; }
 				pointer new_ptr = _alloc.allocate(new_cap);
 				ft::uninitialized_copy(_alloc, begin(), position, iterator(new_ptr));
 				ft::uninitialized_fill_n(_alloc, iterator(new_ptr + (position - begin())), n, value);
-				ft::uninitialized_copy(_alloc, position, end(), iterator(new_ptr + (position - begin() + n)));
+				ft::uninitialized_copy(_alloc, position, end(), iterator(new_ptr + (position - begin() + static_cast<difference_type>(n))));
 				ft::destroy(_alloc, begin(), end());
 				if (_capacity)
 					_alloc.deallocate(_ptr, _capacity);
@@ -370,12 +370,12 @@ allocator_type get_allocator() const { return _alloc; }
 				size_type n = static_cast<size_type>(ft::distance(first, last));
 				if (_capacity - _size >= n) {
 					if (end() - position > static_cast<difference_type>(n)) {
-						ft::uninitialized_copy(_alloc, end() - n, end(), end());
-						ft::copy_backward(position, end() - n, end());
+						ft::uninitialized_copy(_alloc, end() - static_cast<difference_type>(n), end(), end());
+						ft::copy_backward(position, end() - static_cast<difference_type>(n), end());
 						ft::copy(first, last, position);
 					}
 					else {
-						ft::uninitialized_copy(_alloc, position, end(), position + n);
+						ft::uninitialized_copy(_alloc, position, end(), position + static_cast<difference_type>(n));
 						for(difference_type i = 0; i < end() - position; ++i){
 							*position++ = *first++;
 						}
@@ -388,7 +388,7 @@ allocator_type get_allocator() const { return _alloc; }
 					pointer new_ptr = _alloc.allocate(new_cap);
 					ft::uninitialized_copy(_alloc, begin(), position, iterator(new_ptr));
 					ft::uninitialized_copy(_alloc, first, last, iterator(new_ptr + (position - begin())));
-					ft::uninitialized_copy(_alloc, position, end(), iterator(new_ptr + (position - begin() + n)));
+					ft::uninitialized_copy(_alloc, position, end(), iterator(new_ptr + (position - begin() + static_cast<difference_type>(n))));
 					ft::destroy(_alloc, begin(), end());
 					if (_capacity)
 						_alloc.deallocate(_ptr, _capacity);

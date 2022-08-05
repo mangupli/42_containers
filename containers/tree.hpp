@@ -6,7 +6,7 @@
 /*   By: mspyke <mspyke@student.21-school.ru >      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 17:28:58 by mspyke            #+#    #+#             */
-/*   Updated: 2022/08/05 17:53:13 by mspyke           ###   ########.fr       */
+/*   Updated: 2022/08/05 19:41:12 by mspyke           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -279,21 +279,25 @@ protected:
 
 public:
 
-	class iterator : public ft::iterator< ft::bidirectional_iterator_tag, value_type > {
-		/*
-	friend class rb_tree<Key, Value, KeyOfValue, Compare>;
-	friend class const_iterator;
-	*/
+    //class rb_tree_iterator;
+    //friend class rb_tree_iterator;
+
+	class rb_tree_iterator : public ft::iterator< ft::bidirectional_iterator_tag, value_type > {
+
+	//friend class rb_tree<Key, Value, KeyOfValue, Compare, Alloc>;
+	//friend class const_rb_tree_iterator;
 
 	protected:
 		link_type				node;
-		iterator(link_type x) : node(x) {}
+		
 		
 	public:
-		iterator() {}
-		bool operator==(const iterator& y) const { return node == y.node; }
+		rb_tree_iterator(link_type x) : node(x) {}
+		rb_tree_iterator() {}
+		bool operator==(const rb_tree_iterator&other) const { return node == other.node; }
+		bool operator!=(const rb_tree_iterator& other) const { return !(node == other.node); }
 		reference operator*() const { return value(node); }
-		iterator& operator++() {
+		rb_tree_iterator& operator++() {
 			if (right(node) != NIL) {
 				node = right(node);
 				while (left(node) != NIL)
@@ -310,12 +314,12 @@ public:
 			}
 			return *this;
 		}
-		iterator operator++(int) {
-			iterator tmp = *this;
+		rb_tree_iterator operator++(int) {
+			rb_tree_iterator tmp = *this;
 			++*this;
 			return tmp;
 		}
-		iterator& operator--() {
+		rb_tree_iterator& operator--() {
 			if (color(node) == red && parent(parent(node)) == node)  
 				// check for _header which is end()
 				node = right(node);   // return rightmost
@@ -334,33 +338,34 @@ public:
 			}
 			return *this;
 		}
-		iterator operator--(int) {
-			iterator tmp = *this;
+		rb_tree_iterator operator--(int) {
+			rb_tree_iterator tmp = *this;
 			--*this;
 			return tmp;
 		}
-	}; /*class iterator*/
+	}; /*class rb_tree_iterator*/
 
-	class const_iterator 
+	//class const_rb_tree_iterator;
+    //friend class const_rb_tree_iterator;
+
+	class const_rb_tree_iterator 
 		: public ft::iterator< ft::bidirectional_iterator_tag, value_type > {
-			/*
-	friend class rb_tree<Key, Value, KeyOfValue, Compare>;
-	friend class iterator;
-	*/
+	//friend class rb_tree<Key, Value, KeyOfValue, Compare, Alloc>;
+	//friend class rb_tree_iterator;
 	protected:
 		link_type node;
-		const_iterator(link_type x) : node(x) {}
 	public:
-		const_iterator() {}
-		const_iterator(const iterator& x) : node(x.node) {}
-		bool operator==(const const_iterator& y) const { 
+		const_rb_tree_iterator() {}
+		const_rb_tree_iterator(link_type x) : node(x) {}
+		const_rb_tree_iterator(const rb_tree_iterator& x) : node(x.node) {}
+		bool operator==(const const_rb_tree_iterator& y) const { 
 			return node == y.node; 
 		}
-		bool operator!=(const const_iterator& y) const { 
+		bool operator!=(const const_rb_tree_iterator& y) const { 
 			return node != y.node; 
 		}
 		const_reference operator*() const { return value(node); }
-		const_iterator& operator++() {
+		const_rb_tree_iterator& operator++() {
 			if (right(node) != NIL) {
 				node = right(node);
 				while (left(node) != NIL)
@@ -376,12 +381,12 @@ public:
 			}
 			return *this;
 		}
-		const_iterator operator++(int) {
-			const_iterator tmp = *this;
+		const_rb_tree_iterator operator++(int) {
+			const_rb_tree_iterator tmp = *this;
 			++*this;
 			return tmp;
 		}
-		const_iterator& operator--() {
+		const_rb_tree_iterator& operator--() {
 			if (color(node) == red && parent(parent(node)) == node)  
 				// check for _header
 				node = right(node);   // return rightmost
@@ -400,15 +405,17 @@ public:
 			}
 			return *this;
 		}
-		const_iterator operator--(int) {
-			const_iterator tmp = *this;
+		const_rb_tree_iterator operator--(int) {
+			const_rb_tree_iterator tmp = *this;
 			--*this;
 			return tmp;
 		}
-	}; /*class const_iterator*/
-
-	typedef reverse_bidirectional_iterator<iterator> reverse_iterator; 
-	typedef reverse_bidirectional_iterator<const_iterator> const_reverse_iterator;
+	}; /*class const_rb_tree_iterator*/
+	
+	typedef rb_tree_iterator								iterator;
+	typedef const_rb_tree_iterator							const_iterator;
+	typedef reverse_bidirectional_iterator<iterator>		reverse_iterator; 
+	typedef reverse_bidirectional_iterator<const_iterator>	const_reverse_iterator;
 
 /*
 *-------------Constructors and destrcutors----------------------
@@ -682,9 +689,25 @@ private:
 	};
 	
 	void		erase(iterator position);
-	size_type	erase(const key_type& x);
 	
-	void		erase(iterator first, iterator last);
+	size_type	erase(const key_type& x){
+		iterator position = find(x);
+		return 0;
+	}
+	
+	void		erase(iterator first, iterator last) {
+    if (first == begin() && last == end() && _node_count != 0) {
+        _erase(root());
+        leftmost() = _header;
+        root() = NIL;
+        rightmost() = _header;
+        _node_count = 0;
+    } else
+        while (first != last) {
+			erase(first);
+			++first;
+		}
+	}
 
 
 /*

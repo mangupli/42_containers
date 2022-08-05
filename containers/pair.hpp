@@ -6,7 +6,7 @@
 /*   By: mspyke <mspyke@student.21-school.ru >      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 17:29:04 by mspyke            #+#    #+#             */
-/*   Updated: 2022/08/02 17:30:28 by mspyke           ###   ########.fr       */
+/*   Updated: 2022/08/05 18:29:41 by mspyke           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,22 @@ namespace ft{
 
 template <class T1, class T2>
     struct pair {
-        T1 first;
-        T2 second;
-        pair() {}
-        pair(const T1& a, const T2& b) : first(a), second(b) {}
+        T1	first;
+	    T2 second;
+	    pair() : first(), second() {}
+        
+        template <class U, class V>
+            pair(const pair<U, V> &pr) : first(pr.first), second(pr.second) {}
+            
+	    pair(const pair & pr) : first(pr.first), second(pr.second) {}
+        
+        pair(const T1 &a, const T2 &b) : first(a), second(b) {}
+        
+        pair &operator=(const pair &pr) {
+            first = pr.first;
+            second = pr.second;
+            return (*this);
+        }
 };
 
 template <class T1, class T2>

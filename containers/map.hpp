@@ -6,7 +6,7 @@
 /*   By: mspyke <mspyke@student.21-school.ru >      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 17:29:01 by mspyke            #+#    #+#             */
-/*   Updated: 2022/08/05 17:53:55 by mspyke           ###   ########.fr       */
+/*   Updated: 2022/08/05 18:56:28 by mspyke           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,7 +164,7 @@ const_iterator find(const key_type& x) const{
 }
 
 size_type count(const key_type& x) const{
-	return _tree.size;
+	return _tree.count(x);
 }
 
 iterator lower_bound(const key_type& x){

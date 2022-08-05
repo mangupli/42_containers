@@ -291,10 +291,10 @@ int vector_tests()
 		}
 
 		{
-			int size = 5;
+			size_t size = 5;
 			
 			ft::vector<foo<int> >	ft_vector(size);
-			std::vector<foo<int> > stl_vector(size);
+			std::vector<foo<int> >	stl_vector(size);
 			
 			ft::vector<foo<int> >::reverse_iterator ft_it0 = ft_vector.rbegin();
 			std::vector<foo<int> >::reverse_iterator stl_it0 = stl_vector.rbegin();
@@ -309,12 +309,12 @@ int vector_tests()
 			std::vector<foo<int> >::const_reverse_iterator stl_cit1 = stl_vector.rend();
 			
 
-			for (int i = size; ft_it0 != ft_it1; --i){
-				*ft_it0++ = i;
+			for (size_t i = size; ft_it0 != ft_it1; --i){
+				*ft_it0++ = static_cast<int>(i);
 			}
 
-			for (int i = size; stl_it0 != stl_it1; --i){
-				*stl_it0++ = i;
+			for (size_t i = size; stl_it0 != stl_it1; --i){
+				*stl_it0++ = static_cast<int>(i);
 			}
 
 			result = compare_and_print_vector_results(file, stl_vector, ft_vector);
