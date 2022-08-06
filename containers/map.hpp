@@ -6,7 +6,7 @@
 /*   By: mspyke <mspyke@student.21-school.ru >      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 17:29:01 by mspyke            #+#    #+#             */
-/*   Updated: 2022/08/05 18:56:28 by mspyke           ###   ########.fr       */
+/*   Updated: 2022/08/06 18:00:09 by mspyke           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,13 +88,19 @@ public:
 				const Compare& comp = Compare(),
 				const Allocator& alloc = Allocator())
 					: _tree(first, last, comp, alloc) {}
-/*
+
 				
-	map(const map<Key,T,Compare,Allocator>& x);
+	map(const map<Key,T,Compare,Allocator>& other): _tree(other._tree){}
+	
 	~map();
+	
 	map<Key,T,Compare,Allocator>&
-		operator=(const map<Key,T,Compare,Allocator>& x);
-*/
+		operator=(const map<Key,T,Compare,Allocator>& other){
+		if (this != &other)
+			_tree = other._tree;
+		return *this;
+	}
+
 
 /*
  * ----------------CONSTRUCT/COPY/DESTROY-------------------------------------
@@ -118,10 +124,13 @@ public:
 	size_type size() const { return _tree.size(); }
 	size_type max_size() const { return _tree.max_size; }
 
+
 /*
-// 23.3.1.2 element access:
-T& operator[](const key_type& x);
+ * -------------------------ELEMENT ACCESS--------------------------------
 */
+
+	mapped_type& operator[] (const key_type& k)
+		{ return (*((this->insert(value_type(k,mapped_type()))).first)).second;}
 
 /*
  * ------------------------MODIFIERS-------------------------------------
@@ -138,18 +147,34 @@ iterator insert(iterator hint, const value_type& x){
 template <class InputIterator>
 void insert(InputIterator first, InputIterator last);
 
+
+void erase(iterator position){
+	_tree.erase(position);
+}
+
+size_type erase(const key_type& x){
+	return _tree.erase(x);
+}
+
+void erase(iterator first, iterator last){
+	_tree.erase(first, last);
+}
+
+void swap(map<Key,T,Compare,Allocator>&other){
+	_tree.swap(other._tree);
+}
+
+void clear(){
+	_tree.clear();
+}
+
+
 /*
-void erase(iterator position);
-size_type erase(const key_type& x);
-void erase(iterator first, iterator last);
-void swap(map<Key,T,Compare,Allocator>&);
-void clear();
-*/
-/*
-// observers:
-key_compare key_comp() const;
-value_compare value_comp() const;
-*/
+ * ------------------------OBSERVERS-------------------------------------
+ */
+key_compare key_comp() const {return _tree.key_comp;}
+value_compare value_comp() const {return _tree.key_comp;}
+
 
 /*
  * -------------------------SEARCH-------------------------------------
@@ -191,7 +216,8 @@ pair<const_iterator,const_iterator>
 	equal_range(const key_type& x) const{
 		return _tree.equal_range(x);
 	}
-};/*
+};
+/*
 template <class Key, class T, class Compare, class Allocator>
 bool operator==(const map<Key,T,Compare,Allocator>& x,
 const map<Key,T,Compare,Allocator>& y);

@@ -6,7 +6,7 @@
 /*   By: mspyke <mspyke@student.21-school.ru >      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/29 12:08:59 by mspyke            #+#    #+#             */
-/*   Updated: 2022/08/04 12:59:54 by mspyke           ###   ########.fr       */
+/*   Updated: 2022/08/06 14:00:59 by mspyke           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,9 +183,10 @@ struct unary_function {
 };
 
 
-template <class T, class U>
+template <class Pair, class Key>
 struct select1st /*: public unary_function<T, U> */{
-    const U& operator()(const T& x) const { return x.first; }
+    const Key& operator()(const Pair& x) const { return x.first; }
+    
 };
 
 

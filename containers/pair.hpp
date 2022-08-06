@@ -6,7 +6,7 @@
 /*   By: mspyke <mspyke@student.21-school.ru >      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 17:29:04 by mspyke            #+#    #+#             */
-/*   Updated: 2022/08/05 18:29:41 by mspyke           ###   ########.fr       */
+/*   Updated: 2022/08/06 13:57:50 by mspyke           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,13 @@ namespace ft{
 
 template <class T1, class T2>
     struct pair {
-        T1	first;
-	    T2 second;
+        
+        typedef T1 first_type;
+        typedef T2 second_type;
+        
+        first_type      first;
+	    second_type     second;
+        
 	    pair() : first(), second() {}
         
         template <class U, class V>
