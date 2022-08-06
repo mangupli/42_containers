@@ -6,7 +6,7 @@
 /*   By: mspyke <mspyke@student.21-school.ru >      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 17:28:58 by mspyke            #+#    #+#             */
-/*   Updated: 2022/08/06 17:48:54 by mspyke           ###   ########.fr       */
+/*   Updated: 2022/08/06 18:22:03 by mspyke           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -987,7 +987,7 @@ pair<const_iterator,const_iterator> equal_range(const key_type& x) const{
 	}
 
 
-}; /*class tree*/
+}; /*class rb_tree*/
 
 template <class Key, class Value, class KeyOfValue, class Compare, class Alloc>
 typename rb_tree<Key, Value, KeyOfValue, Compare, Alloc>::link_type 
@@ -996,6 +996,22 @@ typename rb_tree<Key, Value, KeyOfValue, Compare, Alloc>::link_type
 template <class Key, class Value, class KeyOfValue, class Compare, class Alloc>
 typename rb_tree<Key, Value, KeyOfValue, Compare, Alloc>::size_type 
 		rb_tree<Key, Value, KeyOfValue, Compare, Alloc>::_number_of_trees = 0;
+
+
+template<class Key, class Value, class KeyOfValue, class Compare, class Alloc>
+bool operator==(const rb_tree<Key, Value, KeyOfValue, Compare, Alloc>& x,
+				const rb_tree<Key, Value, KeyOfValue, Compare, Alloc>& y)
+{
+	return x.size() == y.size() && std::equal(x.begin(), x.end(), y.begin());
+}
+
+template<class Key, class Value, class KeyOfValue, class Compare, class Alloc>
+bool operator<(const rb_tree<Key, Value, KeyOfValue, Compare, Alloc>& x,
+				const rb_tree<Key, Value, KeyOfValue, Compare, Alloc>& y)
+{
+	return ft::lexicographical_compare(x.begin(), x.end(), y.begin(), y.end());
+}
+
 
 } /*namespace ft*/
 
