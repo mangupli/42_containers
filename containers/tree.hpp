@@ -6,7 +6,7 @@
 /*   By: mspyke <mspyke@student.21-school.ru >      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 17:28:58 by mspyke            #+#    #+#             */
-/*   Updated: 2022/08/06 18:22:03 by mspyke           ###   ########.fr       */
+/*   Updated: 2022/08/06 19:09:14 by mspyke           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -298,6 +298,7 @@ public:
 		bool operator==(const rb_tree_iterator&other) const { return node == other.node; }
 		bool operator!=(const rb_tree_iterator& other) const { return !(node == other.node); }
 		reference operator*() const { return value(node); }
+		pointer operator->() const { return &node->value_field; }
 		rb_tree_iterator& operator++() {
 			if (right(node) != NIL) {
 				node = right(node);
@@ -365,7 +366,9 @@ public:
 		bool operator!=(const const_rb_tree_iterator& y) const { 
 			return node != y.node; 
 		}
-		const_reference operator*() const { return value(node); }
+		reference operator*() const  { return value(node); }
+		pointer operator->() const { return &node->value_field; }
+
 		const_rb_tree_iterator& operator++() {
 			if (right(node) != NIL) {
 				node = right(node);
@@ -641,20 +644,20 @@ public:
 
 	iterator	insert(iterator hint, const value_type& value){
 		if (hint == iterator(begin())){
-			if (size() > 0 && key_compare(KeyOfValue()(value), key(hint).node)) {
+			if (size() > 0 && _key_compare(KeyOfValue()(value), key(hint.node))) {
 				//return _insert(hint.node, hint.node, v);
 				return _insert(hint.node, leftmost(), value);
 			} else
 				return insert(value).first;
 		} else if (hint == iterator(end())){
-				if (key_compare(key(rightmost()), KeyOfValue()(value)))
+				if (_key_compare(key(rightmost()), KeyOfValue()(value)))
 					return _insert(NIL, rightmost(), value);
 				else
 					return insert(value).first;
 		} else {
 			iterator before = --hint;
-			if (key_compare(key(before.node), KeyOfValue()(value))
-						&& key_compare(KeyOfValue()(value), key(hint.node))){
+			if (_key_compare(key(before.node), KeyOfValue()(value))
+						&& _key_compare(KeyOfValue()(value), key(hint.node))){
 				if (right(before.node) == NIL)
 					return _insert(NIL, before.node, value); 
 				else
@@ -899,6 +902,7 @@ iterator lower_bound(const key_type& x){
 	}
 	return iterator(last_not_less_than_x);
 }
+
 const_iterator lower_bound(const key_type& x) const{
 	link_type last_not_less_than_x = _header;
 	link_type current_node = root();
@@ -913,6 +917,7 @@ const_iterator lower_bound(const key_type& x) const{
 	}
 	return const_iterator(last_not_less_than_x);
 }
+
 iterator upper_bound(const key_type& x){
 	link_type last_greater_than_x = _header;
 	link_type current_node = root();

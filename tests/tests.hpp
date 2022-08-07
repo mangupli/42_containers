@@ -6,17 +6,19 @@
 /*   By: mspyke <mspyke@student.21-school.ru >      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 17:44:25 by mspyke            #+#    #+#             */
-/*   Updated: 2022/08/03 17:57:16 by mspyke           ###   ########.fr       */
+/*   Updated: 2022/08/06 18:53:57 by mspyke           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef TESTS_HPP
 # define TESTS_HPP
 
+
+# include <list>
+# include <map>
+# include <deque>
 # include <stack>
 # include <vector>
-# include <list>
-# include <deque>
 # include <string>
 # include <iostream>
 # include <fstream>

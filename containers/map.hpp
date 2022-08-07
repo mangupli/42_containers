@@ -6,7 +6,7 @@
 /*   By: mspyke <mspyke@student.21-school.ru >      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 17:29:01 by mspyke            #+#    #+#             */
-/*   Updated: 2022/08/06 18:25:21 by mspyke           ###   ########.fr       */
+/*   Updated: 2022/08/06 18:42:46 by mspyke           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ public:
 				
 	map(const map<Key,T,Compare,Allocator>& other): _tree(other._tree){}
 	
-	~map();
+	~map(){}
 	
 	map<Key,T,Compare,Allocator>&
 		operator=(const map<Key,T,Compare,Allocator>& other){
@@ -122,7 +122,7 @@ public:
 
 	bool empty() const { return _tree.empty(); }
 	size_type size() const { return _tree.size(); }
-	size_type max_size() const { return _tree.max_size; }
+	size_type max_size() const { return _tree.max_size(); }
 
 
 /*
@@ -136,7 +136,7 @@ public:
  * ------------------------MODIFIERS-------------------------------------
  */
 
-pair<iterator, bool> insert(const value_type& x){
+ft::pair<iterator, bool> insert(const value_type& x){
 	return _tree.insert(x);
 }
 
@@ -168,7 +168,6 @@ void clear(){
 	_tree.clear();
 }
 
-
 /*
  * ------------------------OBSERVERS-------------------------------------
  */
@@ -180,49 +179,33 @@ value_compare value_comp() const {return _tree.key_comp;}
  * -------------------------SEARCH-------------------------------------
  */
 
-iterator find(const key_type& x){
-	return _tree.find(x);
-}
+iterator find(const key_type& x){ return _tree.find(x);}
+const_iterator find(const key_type& x) const{ return _tree.find(x);}
 
-const_iterator find(const key_type& x) const{
-	return _tree.find(x);
-}
+size_type count(const key_type& x) const{ return _tree.count(x); }
 
-size_type count(const key_type& x) const{
-	return _tree.count(x);
-}
+iterator lower_bound(const key_type& x){ return _tree.lower_bound(x); }
+const_iterator lower_bound(const key_type& x) const{ return _tree.lower_bound(x); }
 
-iterator lower_bound(const key_type& x){
-	return _tree.lower_bound(x);
-}
+iterator upper_bound(const key_type& x){ return _tree.upper_bound(x); }
+const_iterator upper_bound(const key_type& x) const{ return _tree.upper_bound(x); }
 
-const_iterator lower_bound(const key_type& x) const{
-	return _tree.lower_bound(x);
-}
-
-iterator upper_bound(const key_type& x){
-	return _tree.upper_bound(x);
-}
-
-const_iterator upper_bound(const key_type& x) const{
-	return _tree.upper_bound(x);
-}
-
-pair<iterator,iterator> equal_range(const key_type& x){
-	return _tree.equal_range(x);
-}
+pair<iterator,iterator> equal_range(const key_type& x){ return _tree.equal_range(x);}
 
 pair<const_iterator,const_iterator>
-	equal_range(const key_type& x) const{
-		return _tree.equal_range(x);
-	}
-	template<typename K, typename T, typename C, typename A>
-	friend bool operator==(const map<K, T, C, A>&, const map<K, T, C, A>&);
+	equal_range(const key_type& x) const{ return _tree.equal_range(x); }
+	
+template<typename K1, typename T1, typename C1, typename A1>
+friend bool operator==(const map<K1, T1, C1, A1>&, const map<K1, T1, C1, A1>&);
 
-	template<typename K, typename T, typename C, typename A>
-	friend bool operator<(const map<K, T, C, A>&, const map<K, T, C, A>&);
+template<typename K1, typename T1, typename C1, typename A1>
+friend bool operator<(const map<K1, T1, C1, A1>&, const map<K1, T1, C1, A1>&);
 	
 };/*class map*/
+
+/*
+ * -------------COMPARISON---------------------------
+ */
 
 template <class Key, class T, class Compare, class Allocator>
 bool operator==(const map<Key,T,Compare,Allocator>& x,
@@ -260,6 +243,7 @@ bool operator<=(const map<Key,T,Compare,Allocator>& x,
 const map<Key,T,Compare,Allocator>& y){
 	return!(y < x);
 }
+
 // specialized algorithms:
 template <class Key, class T, class Compare, class Allocator>
 void swap(map<Key,T,Compare,Allocator>& x,
