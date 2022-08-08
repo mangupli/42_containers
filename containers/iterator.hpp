@@ -6,7 +6,7 @@
 /*   By: mspyke <mspyke@student.21-school.ru >      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/28 14:38:45 by mspyke            #+#    #+#             */
-/*   Updated: 2022/08/03 21:02:11 by mspyke           ###   ########.fr       */
+/*   Updated: 2022/08/07 18:08:13 by mspyke           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -342,11 +342,17 @@ public:
 
     reverse_bidirectional_iterator() {}
     reverse_bidirectional_iterator(BidirectionalIterator x) : iter_base(x) {}
-    iterator_type base() { return iter_base; }
+
+	template <class U>
+		reverse_bidirectional_iterator(const reverse_bidirectional_iterator<U>& u){
+			iter_base = u.base();
+		};
+    iterator_type base() const { return iter_base; }
     reference operator*() const {
 	BidirectionalIterator tmp = iter_base;
 		return *--tmp;
     }
+	pointer operator->() const { return &(operator*()); }
 	
     self& operator++() {
 		--iter_base;
@@ -368,12 +374,18 @@ public:
     }
 };
 
-template <class BidirectionalIterator, class T, class Reference,
-          class Distance>
+template <class BidirectionalIterator>
 inline bool operator==(
     const reverse_bidirectional_iterator<BidirectionalIterator>& x, 
     const reverse_bidirectional_iterator<BidirectionalIterator>& y) {
     return x.base() == y.base();
+}
+
+template <class BidirectionalIterator>
+inline bool operator!=(
+    const reverse_bidirectional_iterator<BidirectionalIterator>& x, 
+    const reverse_bidirectional_iterator<BidirectionalIterator>& y) {
+    return x.base() != y.base();
 }
 	
 } /* namespace ft*/

@@ -6,7 +6,7 @@
 /*   By: mspyke <mspyke@student.21-school.ru >      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 17:29:01 by mspyke            #+#    #+#             */
-/*   Updated: 2022/08/06 18:42:46 by mspyke           ###   ########.fr       */
+/*   Updated: 2022/08/08 12:50:03 by mspyke           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ public:
 		}
 	};
 	
-private:
+//private:
 	
 	typedef ft::rb_tree<key_type,
 						value_type,
@@ -87,7 +87,12 @@ public:
 		map(InputIterator first, InputIterator last,
 				const Compare& comp = Compare(),
 				const Allocator& alloc = Allocator())
-					: _tree(first, last, comp, alloc) {}
+					: _tree(comp, alloc)
+	{
+		difference_type n = ft::distance(first, last);
+		while (n--)
+			insert(*(first++));
+	}
 
 				
 	map(const map<Key,T,Compare,Allocator>& other): _tree(other._tree){}
@@ -145,7 +150,11 @@ iterator insert(iterator hint, const value_type& x){
 }
 
 template <class InputIterator>
-void insert(InputIterator first, InputIterator last);
+void insert(InputIterator first, InputIterator last){
+	difference_type n = ft::distance(first, last);
+	while (n--)
+		insert(*(first++));
+}
 
 
 void erase(iterator position){
@@ -171,9 +180,9 @@ void clear(){
 /*
  * ------------------------OBSERVERS-------------------------------------
  */
-key_compare key_comp() const {return _tree.key_comp;}
-value_compare value_comp() const {return _tree.key_comp;}
 
+key_compare key_comp() const {return _tree.key_comp();}
+value_compare value_comp() const {return _tree.key_comp();}
 
 /*
  * -------------------------SEARCH-------------------------------------

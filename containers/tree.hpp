@@ -6,7 +6,7 @@
 /*   By: mspyke <mspyke@student.21-school.ru >      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 17:28:58 by mspyke            #+#    #+#             */
-/*   Updated: 2022/08/06 19:09:14 by mspyke           ###   ########.fr       */
+/*   Updated: 2022/08/08 14:27:35 by mspyke           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,65 +64,47 @@ struct rb_tree_node
 			typedef T					value_type;
 			typedef rb_tree_node<T>*	link_type;
 			
-			value_type		value_field;
+			value_type*		value_ptr;
 		   	link_type		parent_link;
 			link_type		left_link;
 			link_type		right_link;
 			enum color_type	color_field;
-
+/*
 			rb_tree_node ()
 			:
-				value_field(), /*what if value doesn't have a default constructor?*/
+				value_ptr(0), 
 				parent_link(0),
 				left_link(0),
 				right_link(0),
 				color_field(black)
 			{}
-			
-
-			/**
-			** @brief Default.
-			** Create a rb_tree_node with default initisialized value.
-			*/
-		   /*
-			rb_tree_node (link_type parent_link = 0,
-					link_type left_link = 0,
-					link_type right = 0)
-			:
-				value(),
-				parent_link(parent_link),
-				left_link(left_link),
-				right(right_link),
-				color_field(red)
-			{}
-			*/
-			
+	*/					
 			/**
 			** @brief Value.
 			** Create a rb_tree_node with value defined by a copy of "val".
 			**
-			** @param val the value to copy.
+			** @param srcval pointer 
 			*/
 		   
-			rb_tree_node (const value_type& val, link_type parent_link = 0,
+			rb_tree_node (value_type* srcval = 0, link_type parent_link = 0,
 					link_type left_link = 0, link_type right_link = 0)
 			:
-				value_field(val),
+				value_ptr(srcval),
 				parent_link(parent_link),
 				left_link(left_link),
 				right_link(right_link),
 				color_field(red)
 			{}
-
+/*
 			rb_tree_node (const rb_tree_node& other)
 			:
-				value_field(other.value_field),
+				value_ptr(other.value_ptr),
 				parent_link(other.parent_link),
 				left_link(other.left_link),
 				right_link(other.right_link),
 				color_field(other.color_field)
 			{}
-
+*/
 			virtual ~rb_tree_node() {}
 
 			/*
@@ -134,18 +116,20 @@ struct rb_tree_node
 			** @param nd the rb_tree_node to copy.
 			** @return *this.
 			*/
+		/*
 			rb_tree_node &operator=(const rb_tree_node& other)
 			{
 				if (other == *this)
 					return (*this);
 				
-				this->value = other.value;
+				this->value_ptr = other.value_ptr;
 				this->parent_link = other.parent_link;
 				this->left_link = other.left_link;
 				this->right_link = other.right_link;
 				
 				return (*this);
 			}
+			*/
 
 			/*
 			** @brief Compare two rb_tree_node to know
@@ -153,7 +137,7 @@ struct rb_tree_node
 			*/
 			bool operator==(const rb_tree_node& other)
 			{
-				if (value_field == other.value_field)
+				if (*value_ptr == *(other.value_ptr))
 					return (true);
 				return (false);
 			}
@@ -189,7 +173,7 @@ public:
 *-------------------------ACCESSORS--------------------------
 */
 
-protected:
+//protected:
 
 /**
  * @details The _header cell is maintained with links not only to the root
@@ -212,10 +196,6 @@ protected:
 *-------------------------MEMBER VARIABLES--------------------------
 */
 
-	/*
-	bool insert_always;  					// controls whether an element already in the
-						 					// tree is inserted again */
-
 	size_type			_node_count;			// keeps track of size of tree
 	Compare				_key_compare;
 	static size_type	_number_of_trees;
@@ -233,9 +213,18 @@ protected:
 	link_type allocate_node()	{return _node_alloc.allocate(1);}
 	pointer	allocate_value()	{return _value_alloc.allocate(1);}
 
-	void construct_node( link_type new_node, const value_type & value = value_type()){
-		_node_alloc.construct(new_node, node_type(value, _header, NIL, NIL));
+
+	pointer	create_value(const value_type &value){
+		pointer new_val = _value_alloc.allocate(1);
+		_value_alloc.construct(new_val, value);
+		return new_val;
 	}
+
+	void construct_node( link_type new_node, const value_type & value){
+		pointer new_val = create_value(value);
+		_node_alloc.construct(new_node, node_type(new_val, _header, NIL, NIL));
+	}
+		
 
 	value_allocator_type get_allocator() const {return _value_alloc;}
 
@@ -252,7 +241,7 @@ protected:
 	static link_type& parent(link_type x) {
 		return (link_type&)((*x).parent_link);
 	}
-	static reference value(link_type x) { return (*x).value_field; }
+	static reference value(link_type x) { return *((*x).value_ptr); }
 	
 	static const key_type& key(link_type x) {
 		return KeyOfValue()(value(x));
@@ -298,7 +287,7 @@ public:
 		bool operator==(const rb_tree_iterator&other) const { return node == other.node; }
 		bool operator!=(const rb_tree_iterator& other) const { return !(node == other.node); }
 		reference operator*() const { return value(node); }
-		pointer operator->() const { return &node->value_field; }
+		pointer operator->() const { return node->value_ptr; }
 		rb_tree_iterator& operator++() {
 			if (right(node) != NIL) {
 				node = right(node);
@@ -367,7 +356,7 @@ public:
 			return node != y.node; 
 		}
 		reference operator*() const  { return value(node); }
-		pointer operator->() const { return &node->value_field; }
+		pointer operator->() const { return node->value_ptr; }
 
 		const_rb_tree_iterator& operator++() {
 			if (right(node) != NIL) {
@@ -434,7 +423,7 @@ private:
 		if (NIL == 0) {
 			NIL = allocate_node();
 			_node_alloc.construct(NIL, node_type());			
-			//color(NIL) = black; /*already black in the default constructor of rb_tree_node*/
+			color(NIL) = black;
 		}
 		
 		_header = allocate_node();
@@ -478,7 +467,7 @@ public:
 		_header = allocate_node();
 		_node_alloc.construct(_header, node_type());
 		color(_header) = red;
-		root() = _copy(x.root(), _header); //?
+		root() = _copy(x.root(), _header); 
 		if (root() == NIL) {
 			leftmost() = _header;
 			rightmost() = _header;
@@ -498,7 +487,21 @@ public:
 		}
 }
 	rb_tree<Key, Value, KeyOfValue, Compare, Alloc>& 
-		operator=(const rb_tree<Key, Value, KeyOfValue, Compare, Alloc>& x);
+		operator=(const rb_tree<Key, Value, KeyOfValue, Compare, Alloc>& x){
+			if (this != &x) {
+            	erase(begin(), end());
+        		root() = _copy(x.root(), _header);
+        		if (root() == NIL) {
+            		leftmost() = _header;
+            		rightmost() = _header;
+        		} else {
+	    		leftmost() = minimum(root());
+            	rightmost() = maximum(root());
+        		}
+        	_node_count = x._node_count;
+    	}
+    	return *this;
+	}
 
 
 /*
@@ -542,6 +545,26 @@ public:
 */
 
 private:
+/**
+ * TODO: new allocation
+ */
+link_type _copy(link_type src, link_type dst) {
+   // structural copy
+   link_type res = src;
+   while (src != NIL) {
+      link_type tmp = allocate_node();
+      if (res == src) res = tmp;  // save for return value
+	  construct_node(tmp, value(src));
+      left(dst) = tmp;
+      parent(tmp) = dst;
+      color(tmp) = color(dst);
+      right(tmp) = _copy(right(src), tmp);
+      dst = tmp;
+      src = left(src);
+   }
+   left(dst) = NIL;
+   return res;
+}
 
 	iterator _insert(link_type target_link, link_type parent_node, const Value & value){
 	
@@ -681,141 +704,164 @@ public:
 		}
 	}
 private:
+
+	void		_erase_node(link_type n)
+	{
+			if(n->value_ptr){
+				_value_alloc.destroy(n->value_ptr);
+				_value_alloc.deallocate(n->value_ptr, 1);
+				n->value_ptr = 0;
+			}
+			_node_alloc.destroy(n);
+			_node_alloc.deallocate(n, 1);
+	}
+
 	void		_erase(link_type n){ /*erases node and its childs without rebalancing*/
 		while(n != NIL){
 			_erase(right(n));
 			link_type tmp = left(n);
-			_node_alloc.destroy(n);
-			_node_alloc.deallocate(n, 1);
+			_erase_node(n);
 			n = tmp;
 		}
 	};
 	
+public:
 	void		erase(iterator position){
 		
-		link_type z = position.node;
-		link_type to_delete = z;
-		link_type replace; // a node that will be a replacement
+		link_type to_delete = position.node;
+		link_type replace = to_delete;
+		link_type xxx; 
+
+		std::cout << "start_erase" << std::endl;
 		
-		if (left(to_delete) == NIL)
-			replace = right(to_delete);
-		else if (right(to_delete) == NIL) 
-			replace = left(to_delete);
+		if (left(replace) == NIL)
+			xxx = right(replace);
+		else if (right(replace) == NIL) 
+			xxx = left(replace);
 		else {
-			to_delete = right(to_delete);
-			while (left(to_delete) != NIL)
-				to_delete = left(to_delete);
-			replace = right(to_delete);
+			replace = right(replace);
+			while (left(replace) != NIL)
+				replace = left(replace);
+			xxx = right(replace); /* xxx might be NIL */
 		}
+
+		std::cout << "found replacement" << std::endl;
 		
-		if (to_delete != z) { // make the link to the node to_delete  be in place of z
-			parent(left(z)) = to_delete; 
-			left(to_delete) = left(z);
-			if (to_delete != right(z)) {
-				parent(replace) = parent(to_delete); // possibly replacement == NIL
-				left(parent(to_delete)) = replace;   // to_delete must be a left child
-				right(to_delete) = right(z);
-				parent(right(z)) = to_delete;
+		if (replace != to_delete) { // make the link to the node replace be in place of to_delete back
+			/*rebalance the tree so the parent(replace) = parent(to_delete)*/
+			parent(left(to_delete)) = replace; 
+			left(replace) = left(to_delete);
+			if (replace != right(to_delete)) {
+				parent(xxx) = parent(replace); // possibly xxx == NIL
+				left(parent(replace)) = xxx;   // replace must be a left child
+				right(replace) = right(to_delete);
+				parent(right(to_delete)) = replace;
 			} else
-				parent(replace) = to_delete;  // needed in case x == NIL
+				parent(xxx) = replace;  // needed in case xxx == NIL
 			
-			if (root() == z)
-				root() = to_delete;
-			else if (left(parent(z)) == z)
-				left(parent(z)) = to_delete;
-			else 
-				right(parent(z)) = to_delete;
-			parent(to_delete) = parent(z);
-			ft::swap(color(to_delete), color(z));
-			to_delete = z;
-		
-		} else {  // (to_delete == z)
-	
-			parent(replace) = parent(to_delete);   // possibly x == NIL
-			
-			if (root() == z)
+			if (root() == to_delete)
 				root() = replace;
+			else if (left(parent(to_delete)) == to_delete)
+				left(parent(to_delete)) = replace;
+			else 
+				right(parent(to_delete)) = replace;
+				
+			parent(replace) = parent(to_delete);
+			ft::swap(color(replace), color(to_delete));
+			replace = to_delete;
+		
+		} else {  // (replace == to_delete)
+	
+			parent(xxx) = parent(replace);   // possibly x == NIL
+			
+			if (root() == to_delete)
+				root() = xxx;
 			else {
-				if (left(parent(z)) == z)
-					left(parent(z)) = replace;
+				if (left(parent(to_delete)) == to_delete)
+					left(parent(to_delete)) = xxx;
 				else
-					right(parent(z)) = replace;
+					right(parent(to_delete)) = xxx;
 			}
 					
-			if (leftmost() == z) {
-				if (right(z) == NIL)  // left(z) must be NIL also
-					leftmost() = parent(z);
-					// makes leftmost() == header if z == root()
+			if (leftmost() == to_delete) {
+				if (right(to_delete) == NIL)  // left(to_delete) must be NIL also
+					leftmost() = parent(to_delete);
+					// makes leftmost() == header if to_delete == root()
 			}
 			else
-				leftmost() = minimum(replace);
+				leftmost() = minimum(xxx);
 
-			if (rightmost() == z){
-				if (left(z) == NIL) // right(z) must be NIL also
-					rightmost() = parent(z);  
-					// makes rightmost() == header if z == root()
+			if (rightmost() == to_delete){
+				if (left(to_delete) == NIL) // right(to_delete) must be NIL also
+					rightmost() = parent(to_delete);  
+					// makes rightmost() == header if to_delete == root()
 			}	
-			else { // replacement == left(z)
-				rightmost() = maximum(replace);
+			else { // xxx == left(to_delete)
+				rightmost() = maximum(xxx);
 			}
 		}	
 	
-		if (color(to_delete) != red) { 
-			while (replace != root() && color(replace) == black)
-				if (replace == left(parent(replace))) {
-					link_type w = right(parent(replace));
-					if (color(w) == red) {
+		if (color(replace) != red) { 
+			while (xxx != root() && color(xxx) == black) {
+				if (xxx == left(parent(xxx))) {
+					
+					link_type w = right(parent(xxx));
+					
+					if (color(w) == red){ /*recolor and rotation needed then*/
 						color(w) = black;
-						color(parent(replace)) = red;
-						rotate_left(parent(replace));
-						w = right(parent(replace));
+						color(parent(xxx)) = red;
+						rotate_left(parent(xxx));
+						w = right(parent(xxx));
 					}
+					
 					if (color(left(w)) == black && color(right(w)) == black) {
 						color(w) = red;
-						replace = parent(replace);
+						xxx = parent(xxx);
 					} else {
 						if (color(right(w)) == black) {
 							color(left(w)) = black;
 							color(w) = red;
 							rotate_right(w);
-							w = right(parent(replace));
+							w = right(parent(xxx));
 						}
-						color(w) = color(parent(replace));
-						color(parent(replace)) = black;
+						color(w) = color(parent(xxx));
+						color(parent(xxx)) = black;
 						color(right(w)) = black;
-						rotate_left(parent(replace));
+						rotate_left(parent(xxx));
 						break;
 					}
 				} else {  // same as then clause with "right" and "left" exchanged
-					link_type w = left(parent(replace));
+					link_type w = left(parent(xxx));
 					if (color(w) == red) {
 						color(w) = black;
-						color(parent(replace)) = red;
-						rotate_right(parent(replace));
-						w = left(parent(replace));
+						color(parent(xxx)) = red;
+						rotate_right(parent(xxx));
+						w = left(parent(xxx));
 					}
 					if (color(right(w)) == black && color(left(w)) == black) {
 						color(w) = red;
-						replace = parent(replace);
+						xxx = parent(xxx);
 					} else {
 						if (color(left(w)) == black) {
 							color(right(w)) = black;
 							color(w) = red;
 							rotate_left(w);
-							w = left(parent(replace));
+							w = left(parent(xxx));
 						}
-						color(w) = color(parent(replace));
-						color(parent(replace)) = black;
+						color(w) = color(parent(xxx));
+						color(parent(xxx)) = black;
 						color(left(w)) = black;
-						rotate_right(parent(replace));
+						rotate_right(parent(xxx));
 						break;
 					}
 				}
-			color(replace) = black;
+			}
+			color(xxx) = black;
 		}
+
+		std::cout << "before deleting" << std::endl;
 	
-		_node_alloc.destroy(to_delete);
-		_node_alloc.deallocate(to_delete, 1);
+		_erase_node(replace);
 
 		--_node_count;
 	}
@@ -855,7 +901,7 @@ iterator find(const key_type& x){
    	link_type current_node = root(); 
 
    while (current_node != NIL){
-		if (!_key_compare(key(x), x)){
+		if (!_key_compare(key(current_node), x)){
 			last_not_less_than_x = current_node;
 			current_node = left(current_node);
 		} else {
@@ -923,7 +969,7 @@ iterator upper_bound(const key_type& x){
 	link_type current_node = root();
 
 	while(current_node != NIL){
-		if(key_compare(x, key(current_node))){
+		if(_key_compare(x, key(current_node))){
 			last_greater_than_x = current_node;
 			current_node = left(current_node);
 		} else {
@@ -937,7 +983,7 @@ const_iterator upper_bound(const key_type& x) const{
 	link_type current_node = root();
 
 	while(current_node != NIL){
-		if(key_compare(x, key(current_node))){
+		if(_key_compare(x, key(current_node))){
 			last_greater_than_x = current_node;
 			current_node = left(current_node);
 		} else {
