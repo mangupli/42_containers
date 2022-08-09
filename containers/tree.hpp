@@ -82,8 +82,6 @@ struct rb_tree_node
 			/**
 			** @brief Value.
 			** Create a rb_tree_node with value defined by a copy of "val".
-			**
-			** @param srcval pointer 
 			*/
 		   
 			rb_tree_node (value_type* srcval = 0, link_type parent_link = 0,
@@ -141,6 +139,15 @@ struct rb_tree_node
 					return (true);
 				return (false);
 			}
+
+			const value_type * getValue() const {
+				return value_ptr;
+			}
+
+			value_type * getValue() {
+				return value_ptr;
+			}
+			
 	};
 
 template<typename Key, typename Value/*pair<const Key, T>*/, typename KeyOfValue = ft::select1st<Value, Key>,
@@ -276,7 +283,7 @@ public:
 	class rb_tree_iterator : public ft::iterator< ft::bidirectional_iterator_tag, value_type > {
 
 	friend class rb_tree<Key, Value, KeyOfValue, Compare, Alloc>;
-	friend class const_rb_tree_iterator;
+	//friend class const_rb_tree_iterator;
 
 	protected:
 		link_type				node;
@@ -289,7 +296,7 @@ public:
 		bool operator==(const rb_tree_iterator&other) const { return node == other.node; }
 		bool operator!=(const rb_tree_iterator& other) const { return !(node == other.node); }
 		reference operator*() const { return value(node); }
-		pointer operator->() const { return node->value_ptr; }
+		pointer operator->() const { return node->getValue(); }
 		rb_tree_iterator& operator++() {
 			if (right(node) != NIL) {
 				node = right(node);
@@ -342,9 +349,10 @@ public:
 	friend class const_rb_tree_iterator;
 
 	class const_rb_tree_iterator 
-		: public ft::iterator< ft::bidirectional_iterator_tag, value_type > {
+		: public ft::iterator< ft::bidirectional_iterator_tag, const value_type > {
 	friend class rb_tree<Key, Value, KeyOfValue, Compare, Alloc>;
-	friend class rb_tree_iterator;
+	//friend class rb_tree_iterator;
+
 	protected:
 		link_type node;
 		const_rb_tree_iterator(link_type x) : node(x) {}
@@ -357,8 +365,8 @@ public:
 		bool operator!=(const const_rb_tree_iterator& y) const { 
 			return node != y.node; 
 		}
-		reference operator*() const  { return value(node); }
-		pointer operator->() const { return node->value_ptr; }
+		const_reference operator*() const  { return value(node); }
+		const_pointer operator->() const { return node->getValue(); }
 
 		const_rb_tree_iterator& operator++() {
 			if (right(node) != NIL) {
