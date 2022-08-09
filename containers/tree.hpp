@@ -6,7 +6,7 @@
 /*   By: mspyke <mspyke@student.21-school.ru >      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 17:28:58 by mspyke            #+#    #+#             */
-/*   Updated: 2022/08/08 23:48:05 by mspyke           ###   ########.fr       */
+/*   Updated: 2022/08/09 13:27:13 by mspyke           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -252,15 +252,17 @@ protected:
 
 		
 	static link_type minimum(link_type x) {
-		while (x!= NIL && left(x) != NIL)
+		while (/*x!= NIL && */ left(x) != NIL)
 			x = left(x);
 		return x;
 	}
 	static link_type maximum(link_type x) {
-		while (x != NIL && right(x) != NIL)
+		while (/*x != NIL && */right(x) != NIL)
 			x = right(x);
 		return x;
 	}
+
+
 
 /*
 *-------------------------ITERATORS--------------------------
@@ -785,7 +787,7 @@ private:
 			}
 			color(xxx) = black;
 	}
-
+/*
 	void _relink(link_type src, link_type dst){
 		if(root() == src)
 			root() = dst;
@@ -798,57 +800,11 @@ private:
 		}
 			
 	}
+	*/
 	
 public:
 	void		erase(iterator position){
 		
-		link_type to_delete = position.node;
-		link_type replace = to_delete;
-		link_type xxx; 
-		color_type original_color = color(to_delete);
-		/*
-
-		std::cout << "start_erase" << std::endl;
-
-		std::cout <<"iterator to delete:\nkey: " <<
-				key(to_delete) << " | value: " << to_delete->value_ptr->second << std::endl;
-		std::cout << "color:" << (color(to_delete) == 1 ? "black" : "red" ) << std::endl << std::endl;
-
-		*/
-	
-		if (left(to_delete) == NIL){
-			xxx = right(to_delete);
-			_relink(to_delete, right(to_delete));
-		}
-		else if (right(to_delete) == NIL) {
-			xxx = left(to_delete);
-			_relink(to_delete, left(to_delete));
-		}
-		else {
-			replace = minimum(right(to_delete));
-			original_color = color(replace);
-			xxx = right(replace);
-
-			if(parent(replace) == to_delete && xxx != NIL)
-				parent(xxx) = replace;
-			else{
-				_relink(xxx, right(replace));
-				right(replace) = right(to_delete);
-				if(right(replace) != NIL)
-					parent(right(replace)) = replace;
-			}
-			_relink(to_delete, replace);
-			left(replace) = left(to_delete);
-			if(left(replace) != NIL)
-				parent(left(replace)) = replace;
-			color(replace) = color(to_delete);
-			
-			/*
-			replace = right(replace);
-			while (left(replace) != NIL)
-				replace = left(replace);
-			xxx = right(replace); */ // xxx might be NIL 
-		}
 		
 		/*
 		std::cout << "found replacement" << std::endl;
@@ -867,66 +823,75 @@ public:
 		else
 			std::cout << "NIL" << std::endl;
 			*/
+		    
+    link_type to_delete = position.node;
+    link_type replace = to_delete;
+    link_type xxx;
+	
+    if (left(replace) == NIL)
+        xxx = right(replace);
+    else if (right(replace) == NIL) 
+        xxx = left(replace);
+    else {
+            replace = right(replace);
+            while (left(replace) != NIL)
+                replace = left(replace);
+            xxx = right(replace);
+    }
+	
+       
+    if (replace != to_delete) { // relink replace in place of to_delete
+        parent(left(to_delete)) = replace; 
+        left(replace) = left(to_delete);
+        if (replace != right(to_delete)) {
+            parent(xxx) = parent(replace); // possibly xxx == NIL
+            left(parent(replace)) = xxx;   // replace must be a left child
+            right(replace) = right(to_delete);
+            parent(right(to_delete)) = replace;
+        } else
+            parent(xxx) = replace;  // needed in case xxx == NIL
 			
+        if (root() == to_delete)
+            root() = replace;
+        else if (left(parent(to_delete)) == to_delete)
+            left(parent(to_delete)) = replace;
+        else 
+            right(parent(to_delete)) = replace;
 			
-		if (replace != to_delete)
-		 { // make the link to the node replace be in place of to_delete back
-			/*rebalance the tree so the parent(replace) = parent(to_delete)*/
-			parent(left(to_delete)) = replace; 
-			left(replace) = left(to_delete);
-			if (replace != right(to_delete)) {
-				parent(xxx) = parent(replace); // possibly xxx == NIL
-				left(parent(replace)) = xxx;   // replace must be a left child
-				right(replace) = right(to_delete);
-				parent(right(to_delete)) = replace;
-			} else
-				parent(xxx) = replace;  // needed in case xxx == NIL
-			
-			if (root() == to_delete)
-				root() = replace;
-			else if (left(parent(to_delete)) == to_delete)
-				left(parent(to_delete)) = replace;
-			else 
-				right(parent(to_delete)) = replace;
-				
-			parent(replace) = parent(to_delete);
-			ft::swap(color(replace), color(to_delete));
-			replace = to_delete;
+        parent(replace) = parent(to_delete);
+        ft::swap(color(replace), color(to_delete));
+        replace = to_delete;
+                       // replace points to node to be actually deleted
+    } else {  // replace == to_delete
+        parent(xxx) = parent(replace);   // possibly xxx == NIL
 		
-		} else {  // (replace == to_delete)
+        if (root() == to_delete)
+            root() = xxx;
+        else {
+            if (left(parent(to_delete)) == to_delete)
+                left(parent(to_delete)) = xxx;
+            else
+                right(parent(to_delete)) = xxx;
+		}
 		
+        if (leftmost() == to_delete){ 
+            if (right(to_delete) == NIL)  // left(to_delete) must be NIL also
+                leftmost() = parent(to_delete);
+                // makes leftmost() == header if to_delete == root()
+        	else
+            leftmost() = minimum(xxx);
+		}
 			
-			parent(xxx) = parent(replace);   // possibly x == NIL
+        if (rightmost() == to_delete)  {
+            if (left(to_delete) == NIL) // right(to_delete) must be NIL also
+                rightmost() = parent(to_delete);  
+                // makes rightmost() == header if to_delete == root()
+        	else  // xxx == left(to_delete)
+            rightmost() = maximum(xxx);
+		}
+    }	
 			
-			if (root() == to_delete)
-				root() = xxx;
-			else {
-				if (left(parent(to_delete)) == to_delete)					
-					left(parent(to_delete)) = xxx;					
-				else
-					right(parent(to_delete)) = xxx;
-			}
-			if (leftmost() == to_delete) {
-				if (right(to_delete) == NIL){  // left(to_delete) must be NIL also
-					leftmost() = parent(to_delete);
-					
-				}
-				// makes leftmost() == header if to_delete == root()
-			}
-			else /*if (xxx != NIL)*/ {
-				leftmost() = minimum(replace);
-			}
-
-			if (rightmost() == to_delete){
-				if (left(to_delete) == NIL) // right(to_delete) must be NIL also
-					rightmost() = parent(to_delete);  
-					// makes rightmost() == header if to_delete == root()
-			}	
-			else/* if (xxx != NIL)*/{ // xxx == left(to_delete)
-				rightmost() = maximum(replace);
-			}
-
-		}	
+		
 	
 		if (color(replace) != red) { 
 			_eraseFixup(xxx);
@@ -936,7 +901,7 @@ public:
 
 		--_node_count;
 		
-		
+		/*
 
 		std::cout << "leftmost:" << std::endl;
 		link_type left = leftmost();
@@ -962,7 +927,7 @@ public:
 		else
 			std::cout << "NIL" << std::endl;
 		
-			
+		*/	
 	}
 	
 	size_type	erase(const key_type& x){
