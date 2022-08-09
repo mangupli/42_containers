@@ -35,8 +35,9 @@ void print_result_file(std::fstream &file, const bool & result){
 
 int main()
 {
-	//stack_tests();
-	//vector_tests();
-	map_tests();
+	stack_tests();
+	vector_tests();
+	//map_tests();
+	while (1) ;
 	return (0);
 }

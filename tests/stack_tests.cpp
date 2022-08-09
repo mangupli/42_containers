@@ -26,6 +26,7 @@ int	stack_tests()
 	
 	file.open("./tests/tests_output/stack_tests_output.txt", std::fstream::in | std::fstream::out | std::fstream::trunc);
 
+	
 	file << "STACK\n";
 
 	{

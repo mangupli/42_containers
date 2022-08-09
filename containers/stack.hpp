@@ -13,7 +13,6 @@
 #ifndef STACK_H
 #define STACK_H
 
-//#include <vector>
 #include "vector.hpp"
 
 namespace ft

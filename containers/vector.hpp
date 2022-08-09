@@ -59,8 +59,8 @@ namespace ft
  * ---------------------------CONSTRUCTORS--------------------------------------
  */
 
-		explicit vector (const allocator_type& _alloc = allocator_type()):
-							_ptr(NULL), _capacity(0), _size(0), _alloc(_alloc) {}
+		explicit vector (const allocator_type& alloc = allocator_type()):
+							_ptr(0), _capacity(0), _size(0), _alloc(alloc) {}
 
 		explicit vector (size_type n, const value_type& val = value_type(),
 						 const allocator_type& alloc = allocator_type()):
@@ -111,7 +111,7 @@ namespace ft
 		{
 			for (size_type i = 0; i < _size; ++i) 
 				_alloc.destroy(_ptr + i);
-			if(_capacity)
+			if(_ptr)	
 				_alloc.deallocate(_ptr,_capacity);
 		}
 
@@ -126,7 +126,7 @@ namespace ft
 
 				for (size_type i = 0; i < _size; ++i) 
 					_alloc.destroy(_ptr + i);
-				if (_capacity)
+				if (_ptr)
 					_alloc.deallocate(_ptr,_capacity); 
 
 				_size = x._size;
@@ -154,7 +154,7 @@ template <class InputIterator>
 			_size = new_cap;
 		}
 		else {
-			if(_capacity)
+			if(_ptr)
 				_alloc.deallocate(_ptr, _capacity);
 			pointer new_ptr = _alloc.allocate(new_cap);
 			ft::uninitialized_copy(_alloc, first, last, iterator(new_ptr));
@@ -171,7 +171,7 @@ void assign(size_type n, const T& value){
 		_size = n;
 	}
 	else {
-		if(_capacity)
+		if(_ptr)
 			_alloc.deallocate(_ptr, _capacity);
 		pointer new_ptr = _alloc.allocate(n);
 		ft::uninitialized_fill_n(_alloc, iterator(new_ptr), n, value);
@@ -202,7 +202,7 @@ allocator_type get_allocator() const { return _alloc; }
 				ft::uninitialized_copy(_alloc, begin(), end(), iterator(new_ptr));
 
 				ft::destroy(_alloc, begin(), end());
-				if (_capacity) 
+				if(_ptr)
 					_alloc.deallocate(_ptr,_capacity);
 
 				_ptr = new_ptr;
@@ -320,7 +320,7 @@ allocator_type get_allocator() const { return _alloc; }
 				_alloc.construct(new_ptr + (position - begin()), value);
 				ft::uninitialized_copy(_alloc, position, end(), iterator(new_ptr + (position - begin()) + 1));
 				ft::destroy(_alloc, begin(), end());
-				if (_capacity)
+				if(_ptr)
 					_alloc.deallocate(_ptr, _capacity);
 				
 				_ptr = new_ptr;
@@ -328,7 +328,7 @@ allocator_type get_allocator() const { return _alloc; }
 				++_size;
 			}
 			
-			return iterator(_ptr + n);; /*TODO: check*/
+			return iterator(_ptr + n);;
 		}
 
 		void insert(iterator position, size_type n, const T& value) {
@@ -353,7 +353,7 @@ allocator_type get_allocator() const { return _alloc; }
 				ft::uninitialized_fill_n(_alloc, iterator(new_ptr + (position - begin())), n, value);
 				ft::uninitialized_copy(_alloc, position, end(), iterator(new_ptr + (position - begin() + static_cast<difference_type>(n))));
 				ft::destroy(_alloc, begin(), end());
-				if (_capacity)
+				if (_ptr)
 					_alloc.deallocate(_ptr, _capacity);
 				_ptr = new_ptr;
 				_capacity = new_cap;
@@ -390,7 +390,7 @@ allocator_type get_allocator() const { return _alloc; }
 					ft::uninitialized_copy(_alloc, first, last, iterator(new_ptr + (position - begin())));
 					ft::uninitialized_copy(_alloc, position, end(), iterator(new_ptr + (position - begin() + static_cast<difference_type>(n))));
 					ft::destroy(_alloc, begin(), end());
-					if (_capacity)
+					if (_ptr)
 						_alloc.deallocate(_ptr, _capacity);
 					_ptr = new_ptr;
 					_capacity = new_cap;

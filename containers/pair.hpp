@@ -31,7 +31,9 @@ template <class T1, class T2>
             
 	    pair(const pair & pr) : first(pr.first), second(pr.second) {}
         
-        pair(const T1 &a, const T2 &b) : first(a), second(b) {}
+        pair(const T1 &a, const T2 &b) : first(a), second(b) {
+
+        }
         
         pair &operator=(const pair &pr) {
             first = pr.first;

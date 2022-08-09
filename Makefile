@@ -15,7 +15,7 @@ CONTAINERS = $(addprefix $(CONTAINERS_DIR), $(CONTAINERS_FILES))
 # Compilation ---------------------------------------------
 
 COMPILER = g++
-FLAGS = -std=c++98 -Wall -Wextra -Werror -Wconversion
+FLAGS = -std=c++98 #-Wall -Wextra -Werror -Wconversion
 SCRIPT_DIFF = bash script_diff.sh
 
 # Сolors for beauty ---------------------------------------
