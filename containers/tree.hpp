@@ -6,7 +6,7 @@
 /*   By: mspyke <mspyke@student.21-school.ru >      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 17:28:58 by mspyke            #+#    #+#             */
-/*   Updated: 2022/08/09 13:27:13 by mspyke           ###   ########.fr       */
+/*   Updated: 2022/08/09 13:39:04 by mspyke           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -670,8 +670,8 @@ public:
 	iterator	insert(iterator hint, const value_type& value){
 		if (hint == iterator(begin())){
 			if (size() > 0 && _key_compare(KeyOfValue()(value), key(hint.node))) {
-				//return _insert(hint.node, hint.node, v);
-				return _insert(hint.node, leftmost(), value);
+				return _insert(hint.node, hint.node, value);
+				//return _insert(hint.node, leftmost(), value);
 			} else
 				return insert(value).first;
 		} else if (hint == iterator(end())){
@@ -879,7 +879,7 @@ public:
                 leftmost() = parent(to_delete);
                 // makes leftmost() == header if to_delete == root()
         	else
-            leftmost() = minimum(xxx);
+            	leftmost() = minimum(xxx);
 		}
 			
         if (rightmost() == to_delete)  {
@@ -893,7 +893,7 @@ public:
 			
 		
 	
-		if (color(replace) != red) { 
+		if (color(replace) == black) { 
 			_eraseFixup(xxx);
 		}
 	
