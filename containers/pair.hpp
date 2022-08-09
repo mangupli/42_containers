@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pair.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mspyke <mspyke@student.21-school.ru >      +#+  +:+       +#+        */
+/*   By: mspyke <mspyke@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 17:29:04 by mspyke            #+#    #+#             */
-/*   Updated: 2022/08/06 13:57:50 by mspyke           ###   ########.fr       */
+/*   Updated: 2022/08/09 18:19:38 by mspyke           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,11 @@ template <class T1, class T2>
 template <class T1, class T2>
 inline bool operator==(const pair<T1, T2>& x, const pair<T1, T2>& y) { 
     return x.first == y.first && x.second == y.second; 
+}
+
+template <class T1, class T2>
+inline bool operator!=(const pair<T1, T2>& x, const pair<T1, T2>& y) { 
+    return x.first != y.first || x.second != y.second; 
 }
 
 template <class T1, class T2>

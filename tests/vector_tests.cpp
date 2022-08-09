@@ -1,5 +1,14 @@
-#include <iostream>
-#include <vector>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   vector_tests.cpp                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mspyke <mspyke@student.21-school.ru>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/08/09 18:14:46 by mspyke            #+#    #+#             */
+/*   Updated: 2022/08/09 18:14:50 by mspyke           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "vector_tests.hpp"
 
@@ -7,7 +16,7 @@
 int vector_tests()
 {
 	std::fstream	file;
-	bool			result;
+	bool			result = true;
 
 	mkdir("./tests/tests_output", 0777);
 

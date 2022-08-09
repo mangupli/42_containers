@@ -3,7 +3,7 @@
 
 #define T1 int
 #define T2 foo<int>
-//#define TESTED_NAMESPACE ft
+
 typedef TESTED_NAMESPACE::map<T1, T2>::value_type T3;
 typedef TESTED_NAMESPACE::map<T1, T2>::iterator ft_iterator;
 typedef TESTED_NAMESPACE::map<T1, T2>::const_iterator ft_const_iterator;
