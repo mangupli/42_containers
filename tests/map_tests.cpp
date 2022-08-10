@@ -6,7 +6,7 @@
 /*   By: mspyke <mspyke@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/03 17:55:16 by mspyke            #+#    #+#             */
-/*   Updated: 2022/08/09 18:39:05 by mspyke           ###   ########.fr       */
+/*   Updated: 2022/08/10 16:24:20 by mspyke           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,53 +50,230 @@ int	map_tests()
 
     {
 		file << "------------------------------------------------------------------------\n";
-		file << "Bounds:\n";
-		std::cout << MAGENTA << "Bounds:\n" << RESET;
+		file << "Copy contructors:\n";
+		std::cout << MAGENTA << "Copy contructors:\n" << RESET;
+
+        typedef int type1;
+        typedef int type2;
+        typedef std::pair<type1, type2> std_pair_type;
+        typedef ft::pair<type1, type2> ft_pair_type;
+
+        size_t vector_size = 7;
+
+        //----range contructor-----
         
-        typedef std::map<int, foo<int> >::value_type stl_value;
-        typedef ft::map<int, foo<int> >::value_type ft_value;
+        std::vector<std_pair_type> std_vector;
+	   for (unsigned int i = 0; i < vector_size; ++i)
+		    std_vector.push_back(std_pair_type(vector_size - i, i));
+            
+        std::map<type1, type2> std_map(std_vector.begin(), std_vector.end());
 
-		std::map<int, int> stl_map;
-		ft::map<int, int> ft_map;
+        ft::vector<ft_pair_type> ft_vector;
+	    for (unsigned int i = 0; i < vector_size; ++i)
+		    ft_vector.push_back(ft_pair_type(vector_size - i, i));
 
-		result = compare_and_print_map_results(file, stl_map, ft_map);
+        ft::map<type1, type2> ft_map(ft_vector.begin(), ft_vector.end());
+
+        result = compare_and_print_map_results(file, std_map, ft_map);
 		print_result_cout(result, false);
 
+        //----copy constructor from the range-----
+        
+       
+        
+        typename std::map<type1, type2>::iterator std_it = std_map.begin();
+        typename std::map<type1, type2>::iterator std_ite = std_map.end();
+
+         std::map<type1, type2> std_map_range(std_it, --(--std_ite));
+
+	    for (int i = 0; std_it != std_ite; ++std_it)
+		    std_it->second = ++i * 5;
+
+        typename ft::map<type1, type2>::iterator ft_it = ft_map.begin();
+        typename ft::map<type1, type2>::iterator ft_ite = ft_map.end();
+
+        ft::map<type1, type2> ft_map_range(ft_it, --(--ft_ite));
+
+	    for (int i = 0; ft_it != ft_ite; ++ft_it)
+		    ft_it->second = ++i * 5;
+
+
+        result = compare_and_print_map_results(file, std_map_range, ft_map_range);
+		print_result_cout(result, false);
+
+        //--------copy constuctor-------
+
+
+        ft::map<type1, type2> ft_map_copy(ft_map_range);  
+        std::map<type1, type2> std_map_copy(std_map_range);
+
+        result = compare_and_print_map_results(file, std_map_copy, ft_map_copy);
+		print_result_cout(result, true);
+
+        file << "------------------------------------------------------------------------\n";
+		file << "Assignment operator:\n";
+		std::cout << MAGENTA << "Assignment operator:\n" << RESET;
+
+        std_it = std_map_range.begin(); std_ite = --(--std_map_range.end());
+        for (int i = 0; std_it != std_ite; ++std_it)
+		    std_it->second = ++i * 7;  
+            
+        ft_it = ft_map_range.begin(); ft_ite = --(--ft_map_range.end());
+        for (int i = 0; ft_it != ft_ite; ++ft_it)
+		    ft_it->second = ++i * 7; 
+            
+        ft_map = ft_map_copy;
+        std_map = std_map_copy;
+
+        result = compare_and_print_map_results(file, std_map, ft_map);
+		print_result_cout(result, false);
+        
+        ft_map_copy = ft_map_range;
+        std_map_copy = std_map_range;
+        
+        result = compare_and_print_map_results(file, std_map_copy, ft_map_copy);
+		print_result_cout(result, false);          
+                    
+	    ft_map_range.clear();
+        std_map_range.clear();
+        result = compare_and_print_map_results(file, std_map_copy, ft_map_copy);
+		print_result_cout(result, true); 
+		
 	}
 
-
-/*
-    ft::map<int, int> test;
-    const ft::pair<int, int> pair(42, 42);
-    
-    test.insert(pair);
-    for(int i = 100; i > 0; i -=15 )
     {
-        test.insert(ft::pair<int, int>(i*5, 42));
-    }
-     ft::map<int, int>::iterator it = test.begin();
 
-     for( ; it != test.end(); ++it){
-        std::cout << it->first << std::endl;
-     }
+        file << "------------------------------------------------------------------------\n";
+		file << "Insert:\n";
+		std::cout << MAGENTA << "Insert:\n" << RESET;
 
+        typedef int type1;
+        typedef std::string type2;
+        
+        typedef std::pair<type1, type2> std_pair_type;
+        typedef ft::pair<type1, type2> ft_pair_type;
 
-    std::map<int, int> test1;
-    const std::pair<int, int> pair1(42, 42);
+        typedef std::map<type1, type2>::iterator std_iterator;
+        typedef ft::map<type1, type2>::iterator ft_iterator;
+        
+        std::pair<std_iterator, bool> std_res;
+        ft::pair<ft_iterator, bool> ft_res;
+
+        std::map<type1, type2> std_map;              
+        ft::map<type1, type2> ft_map;
+
+        
+       std_res = std_map.insert(std_pair_type(42, "lisa"));;
+       ft_res = ft_map.insert(ft_pair_type(42, "lisa"));
     
-    test1.insert(pair1);
-    for(int i = 100; i > 0; i -=15 )
-    {
-        test1.insert(std::pair<int, int>(i*5, 42));
-    }
-     std::map<int, int>::iterator it1 = test1.begin();
+        //true
+       result = (std_res.second == ft_res.second) && \
+                (std_res.first->first == ft_res.first->first) && \
+                (std_res.first->second == ft_res.first->second);
 
-     for( ; it1 != test1.end(); ++it1){
-        std::cout << it1->first << std::endl;
-     }
-     */
+        result = result && compare_and_print_map_results(file, std_map, ft_map);
+		print_result_cout(result, false);
+
+        std_res = std_map.insert(std_pair_type(42, "lol"));;
+        ft_res = ft_map.insert(ft_pair_type(42, "lol"));
+    
+        //false
+       result = (std_res.second == ft_res.second) && \
+                (std_res.first->first == ft_res.first->first) && \
+                (std_res.first->second == ft_res.first->second);
+
+        result = result && compare_and_print_map_results(file, std_map, ft_map);
+		print_result_cout(result, false);
+
+        ft_map.insert(ft_pair_type(14, "meow"));
+        ft_map.insert(ft_pair_type(17, "so smart"));
+        ft_map.insert(ft_pair_type(15, "abc"));
+        ft_map.insert(ft_pair_type(18, "zhopa"));
+        ft_map.insert(ft_pair_type(65, "ili jopa?"));
+
+        std_map.insert(std_pair_type(14, "meow"));
+        std_map.insert(std_pair_type(17, "so smart"));
+        std_map.insert(std_pair_type(15, "abc"));
+        std_map.insert(std_pair_type(18, "zhopa"));
+        std_map.insert(std_pair_type(65, "ili jopa?"));
+
+        result =  compare_and_print_map_results(file, std_map, ft_map);
+		print_result_cout(result, false);
+
+        //hints
+
+        ft_iterator ft_it = ft_map.insert(ft_map.begin(), ft_pair_type(2, "getting hints"));
+        std_iterator std_it = std_map.insert(std_map.begin(), std_pair_type(2, "getting hints"));
+
+        result = (std_it->first == ft_it->first) && \
+                (std_it->second == ft_it->second);
+
+        ft_it = ft_map.insert(ft_map.end(), ft_pair_type(0, "say something"));
+        std_it = std_map.insert(std_map.end(), std_pair_type(0, "say something"));
+
+        result = result && (std_it->first == ft_it->first) && \
+                (std_it->second == ft_it->second);
+                
+        result = result && compare_and_print_map_results(file, std_map, ft_map);
+		print_result_cout(result, false);
+
+        //operator []
+
+        ft_map[34] = "try me";
+        ft_map[17] = "change me";
+        ft_map[18] = "one more";
+ 
+        std_map[34] = "try me";
+        std_map[17] = "change me";
+        std_map[18] = "one more";
+
+        result = compare_and_print_map_results(file, std_map, ft_map);
+		print_result_cout(result, false);
+        
+        //insert (iterator first, iterator last);
+
+        int vector_size = 8;
+
+        std::vector<std_pair_type> std_vector;
+	   for (unsigned int i = 0; i < vector_size; ++i)
+		    std_vector.push_back(std_pair_type(vector_size - i, "came from vector"));
+            
+        std_map.insert(std_vector.begin(), std_vector.end());
+
+        ft::vector<ft_pair_type> ft_vector;
+	    for (unsigned int i = 0; i < vector_size; ++i)
+		    ft_vector.push_back(ft_pair_type(vector_size - i, "came from vector"));
+
+        ft_map.insert(ft_vector.begin(), ft_vector.end());
+
+        result = compare_and_print_map_results(file, std_map, ft_map);
+		print_result_cout(result, true);
+   
+    }
+
+
+
          
     file.close();
 
     return 0;
 }
+
+/*
+        typedef int type1;
+        typedef std::string type2;
+        typedef std::pair<type1, type2> std_pair_type;
+        typedef ft::pair<type1, type2> ft_pair_type;
+
+        std::map<type1, type2> std_map;
+               
+        typename std::map<type1, type2>::iterator std_it = std_map.begin();
+        typename std::map<type1, type2>::iterator std_ite = std_map.end();
+
+
+        ft::map<type1, type2> ft_map;
+        
+        typename ft::map<type1, type2>::iterator ft_it = ft_map.begin();
+        typename ft::map<type1, type2>::iterator ft_ite = ft_map.end();
+
+*/

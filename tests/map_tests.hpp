@@ -6,7 +6,7 @@
 /*   By: mspyke <mspyke@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/03 17:54:49 by mspyke            #+#    #+#             */
-/*   Updated: 2022/08/09 18:20:58 by mspyke           ###   ########.fr       */
+/*   Updated: 2022/08/10 15:05:58 by mspyke           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,6 @@ void	print_map_attributes(
     }
 	if (stl_map.size() > count)
 	 	  file << "...";
-
     file << std::endl;
 
     file << "FT : \n";
@@ -76,7 +75,7 @@ void	print_map_attributes(
     }
 	if (ft_map.size() > count)
 	 	  file << "...";
-    file << "]\n";
+    file << std::endl;
 
 	file << "------------------------------------------------------------------------\n";
 }

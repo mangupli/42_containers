@@ -6,7 +6,7 @@
 /*   By: mspyke <mspyke@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/02 17:28:58 by mspyke            #+#    #+#             */
-/*   Updated: 2022/08/09 18:42:26 by mspyke           ###   ########.fr       */
+/*   Updated: 2022/08/10 14:38:39 by mspyke           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -380,7 +380,7 @@ public:
 	typedef reverse_bidirectional_iterator<const_iterator>	const_reverse_iterator;
 
 /*
-*-------------Constructors and destrcutors----------------------
+*-------------Constructors and destructors----------------------
 */
 
 private:
@@ -397,7 +397,7 @@ private:
 		
 		_header = allocate_node();
 		_node_alloc.construct(_header, node_type());
-		color(_header) = red; //color red used to distinguish _header from root,                      
+		color(_header) = red; //color red used to distinguish _header from root                      
 		root() = NIL;
 		leftmost() = _header;
 		rightmost() = _header;
@@ -609,7 +609,6 @@ link_type _copy(link_type src, link_type dst) {
 
 public:
 	
-	//typedef  pair<iterator, bool> pair_iterator_bool; 
 	ft::pair<iterator, bool> insert(const value_type& value){
 		
 		link_type parent_node = _header;
@@ -694,65 +693,65 @@ private:
 		}
 	};
 
-	void	_eraseFixup(link_type xxx){
+	void	_eraseFixup(link_type replace){
 		
 		link_type w;
 		
-		while (xxx != root() && color(xxx) == black) {
-				if (xxx == left(parent(xxx))) {
+		while (replace != root() && color(replace) == black) {
+				if (replace == left(parent(replace))) {
 					
-					w = right(parent(xxx));
+					w = right(parent(replace));
 					
 					if (color(w) == red){ /*recolor and rotation needed then*/
 						color(w) = black;
-						color(parent(xxx)) = red;
-						rotate_left(parent(xxx));
-						w = right(parent(xxx));
+						color(parent(replace)) = red;
+						rotate_left(parent(replace));
+						w = right(parent(replace));
 					}
 					
 					if (color(left(w)) == black && color(right(w)) == black) {
 						color(w) = red;
-						xxx = parent(xxx);
+						replace = parent(replace);
 					} else {
 						if (color(right(w)) == black) {
 							color(left(w)) = black;
 							color(w) = red;
 							rotate_right(w);
-							w = right(parent(xxx));
+							w = right(parent(replace));
 						}
-						color(w) = color(parent(xxx));
-						color(parent(xxx)) = black;
+						color(w) = color(parent(replace));
+						color(parent(replace)) = black;
 						color(right(w)) = black;
-						rotate_left(parent(xxx));
+						rotate_left(parent(replace));
 						break;
 					}
 				} else {  // same as then clause with "right" and "left" exchanged
-					w = left(parent(xxx));
+					w = left(parent(replace));
 					if (color(w) == red) {
 						color(w) = black;
-						color(parent(xxx)) = red;
-						rotate_right(parent(xxx));
-						w = left(parent(xxx));
+						color(parent(replace)) = red;
+						rotate_right(parent(replace));
+						w = left(parent(replace));
 					}
 					if (color(right(w)) == black && color(left(w)) == black) {
 						color(w) = red;
-						xxx = parent(xxx);
+						replace = parent(replace);
 					} else {
 						if (color(left(w)) == black) {
 							color(right(w)) = black;
 							color(w) = red;
 							rotate_left(w);
-							w = left(parent(xxx));
+							w = left(parent(replace));
 						}
-						color(w) = color(parent(xxx));
-						color(parent(xxx)) = black;
+						color(w) = color(parent(replace));
+						color(parent(replace)) = black;
 						color(left(w)) = black;
-						rotate_right(parent(xxx));
+						rotate_right(parent(replace));
 						break;
 					}
 				}
 			}
-			color(xxx) = black;
+			color(replace) = black;
 	}
 /*
 	void _relink(link_type src, link_type dst){
@@ -774,52 +773,52 @@ public:
 		
 		    
     	link_type orig_to_erase = position.node;
-    	link_type replace = orig_to_erase;
-    	link_type xxx;
+    	link_type to_delete = orig_to_erase;
+    	link_type replace;
 		
-    	if (left(replace) == NIL)
-    	    xxx = right(replace);
-    	else if (right(replace) == NIL) 
-    	    xxx = left(replace);
+    	if (left(to_delete) == NIL)
+    	    replace = right(to_delete);
+    	else if (right(to_delete) == NIL) 
+    	    replace = left(to_delete);
     	else {
-    	        replace = right(replace);
-    	        while (left(replace) != NIL)
-    	            replace = left(replace);
-    	        xxx = right(replace);
+    	        to_delete = right(to_delete);
+    	        while (left(to_delete) != NIL)
+    	            to_delete = left(to_delete);
+    	        replace = right(to_delete);
     	}
        
-    	if (replace != orig_to_erase) { // relink replace in place of orig_to_erase
-    	    parent(left(orig_to_erase)) = replace; 
-    	    left(replace) = left(orig_to_erase);
-    	    if (replace != right(orig_to_erase)) {
-    	        parent(xxx) = parent(replace); // possibly xxx == NIL
-    	        left(parent(replace)) = xxx;   // replace must be a left child
-    	        right(replace) = right(orig_to_erase);
-    	        parent(right(orig_to_erase)) = replace;
+    	if (to_delete != orig_to_erase) { // relink to_delete in place of orig_to_erase
+    	    parent(left(orig_to_erase)) = to_delete; 
+    	    left(to_delete) = left(orig_to_erase);
+    	    if (to_delete != right(orig_to_erase)) {
+    	        parent(replace) = parent(to_delete); // possibly replace == NIL
+    	        left(parent(to_delete)) = replace;   // to_delete must be a left child
+    	        right(to_delete) = right(orig_to_erase);
+    	        parent(right(orig_to_erase)) = to_delete;
     	    } else
-    	        parent(xxx) = replace;  // needed in case xxx == NIL
+    	        parent(replace) = to_delete;  // needed in case replace == NIL
 				
     	    if (root() == orig_to_erase)
-    	        root() = replace;
+    	        root() = to_delete;
     	    else if (left(parent(orig_to_erase)) == orig_to_erase)
-    	        left(parent(orig_to_erase)) = replace;
+    	        left(parent(orig_to_erase)) = to_delete;
     	    else 
-    	        right(parent(orig_to_erase)) = replace;
+    	        right(parent(orig_to_erase)) = to_delete;
 				
-    	    parent(replace) = parent(orig_to_erase);
-    	    ft::swap(color(replace), color(orig_to_erase));
-    	    replace = orig_to_erase;
-    	                   // replace points to node to be actually deleted
-    	} else {  // replace == orig_to_erase
-        	parent(xxx) = parent(replace);   // possibly xxx == NIL
+    	    parent(to_delete) = parent(orig_to_erase);
+    	    ft::swap(color(to_delete), color(orig_to_erase));
+    	    to_delete = orig_to_erase;
+    	                   // to_delete points to node to be actually deleted
+    	} else {  // to_delete == orig_to_erase
+        	parent(replace) = parent(to_delete);   // possibly replace == NIL
 			
         	if (root() == orig_to_erase)
-        	    root() = xxx;
+        	    root() = replace;
         	else {
         	    if (left(parent(orig_to_erase)) == orig_to_erase)
-        	        left(parent(orig_to_erase)) = xxx;
+        	        left(parent(orig_to_erase)) = replace;
         	    else
-        	        right(parent(orig_to_erase)) = xxx;
+        	        right(parent(orig_to_erase)) = replace;
 			}
 		
         	if (leftmost() == orig_to_erase){ 
@@ -827,23 +826,23 @@ public:
         	        leftmost() = parent(orig_to_erase);
         	        // makes leftmost() == header if orig_to_erase == root()
         		else
-        	    	leftmost() = minimum(xxx);
+        	    	leftmost() = minimum(replace);
 			}
 			
         	if (rightmost() == orig_to_erase)  {
         	    if (left(orig_to_erase) == NIL) // right(orig_to_erase) must be NIL also
         	        rightmost() = parent(orig_to_erase);  
         	        // makes rightmost() == header if orig_to_erase == root()
-        		else  // xxx == left(orig_to_erase)
-        	    rightmost() = maximum(xxx);
+        		else  // replace == left(orig_to_erase)
+        	    rightmost() = maximum(replace);
 			}
     	}	
 			
-		if (color(replace) == black) { 
-			_eraseFixup(xxx);
+		if (color(to_delete) == black) { 
+			_eraseFixup(replace);
 		}
 	
-		_erase_node(replace);
+		_erase_node(to_delete);
 		--_node_count;
 	
 	}
