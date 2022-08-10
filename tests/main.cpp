@@ -6,7 +6,7 @@
 /*   By: mspyke <mspyke@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 17:40:32 by mspyke            #+#    #+#             */
-/*   Updated: 2022/08/10 15:20:43 by mspyke           ###   ########.fr       */
+/*   Updated: 2022/08/10 16:53:35 by mspyke           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,12 +32,10 @@ void print_result_file(std::fstream &file, const bool & result){
 	file << (result == true ? "[OK]\n" : "[KO]\n");
 }
 
-
 int main()
 {
-	//stack_tests();
-	//vector_tests();
+	stack_tests();
+	vector_tests();
 	map_tests();
-	//while (1) ;
 	return (0);
 }

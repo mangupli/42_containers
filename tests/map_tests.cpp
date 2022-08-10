@@ -6,7 +6,7 @@
 /*   By: mspyke <mspyke@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/03 17:55:16 by mspyke            #+#    #+#             */
-/*   Updated: 2022/08/10 16:24:20 by mspyke           ###   ########.fr       */
+/*   Updated: 2022/08/10 16:52:54 by mspyke           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,6 +138,30 @@ int	map_tests()
         std_map_range.clear();
         result = compare_and_print_map_results(file, std_map_copy, ft_map_copy);
 		print_result_cout(result, true); 
+
+        file << "------------------------------------------------------------------------\n";
+		file << "Comparison operators:\n";
+		std::cout << MAGENTA << "Comparison operators:\n" << RESET;
+
+        result = map_comp_operators(std_map, std_map, ft_map, ft_map);
+        print_result_cout(result, false);
+        
+        result = map_comp_operators(std_map, std_map_range, ft_map, ft_map_range);
+        print_result_cout(result, true);
+		
+
+        file << "------------------------------------------------------------------------\n";
+		file << "Swap:\n";
+		std::cout << MAGENTA << "Swap:\n" << RESET;
+
+        ft::swap(ft_map, ft_map_range);
+        std::swap(std_map, std_map_range);
+        
+        result = compare_and_print_map_results(file, std_map, ft_map);
+		print_result_cout(result, false);
+        
+        result = compare_and_print_map_results(file, std_map_range, ft_map_range);
+		print_result_cout(result, true); 
 		
 	}
 
@@ -248,32 +272,92 @@ int	map_tests()
 
         result = compare_and_print_map_results(file, std_map, ft_map);
 		print_result_cout(result, true);
-   
+
+        file << "------------------------------------------------------------------------\n";
+		file << "Erase:\n";
+		std::cout << MAGENTA << "Erase:\n" << RESET;
+
+       //erase from iterator
+       
+       ft_map.erase(++ft_map.begin());
+        std_map.erase(++std_map.begin());
+
+        result = compare_and_print_map_results(file, std_map, ft_map);
+		print_result_cout(result, false);
+
+        ft_map.erase(ft_map.begin());
+        std_map.erase(std_map.begin());
+
+        result = compare_and_print_map_results(file, std_map, ft_map);
+		print_result_cout(result, false);
+
+        ft_map.erase(--ft_map.end());
+        std_map.erase(--std_map.end());
+
+        result = compare_and_print_map_results(file, std_map, ft_map);
+		print_result_cout(result, false);
+
+
+        ft_map.erase(ft_map.begin(), ++(++(++ft_map.begin())));
+        std_map.erase(std_map.begin(), ++(++(++std_map.begin())));
+        
+        result = compare_and_print_map_results(file, std_map, ft_map);
+		print_result_cout(result, false);
+
+        ft_map.erase(--(--(--ft_map.end())), --ft_map.end());
+        std_map.erase(--(--(--std_map.end())), --std_map.end());
+        
+        result = compare_and_print_map_results(file, std_map, ft_map);
+		print_result_cout(result, false);
+
+        ft_map.erase(ft_map.begin(), ft_map.end());
+        std_map.erase(std_map.begin(), std_map.end());
+
+        result = compare_and_print_map_results(file, std_map, ft_map);
+		print_result_cout(result, true);
+
+        //erase from value
+
+        std_map.insert(std_vector.begin(), std_vector.end());
+        ft_map.insert(ft_vector.begin(), ft_vector.end());
+
+        result = compare_and_print_map_results(file, std_map, ft_map);
+		print_result_cout(result, false);
+
+        ft_map.erase(ft_map.begin()->first);
+        std_map.erase(std_map.begin()->first);
+        result = compare_and_print_map_results(file, std_map, ft_map);
+		print_result_cout(result, false);
+
+        ft_map.erase((++(++(ft_map.begin())))->first);
+        std_map.erase((++(++(std_map.begin())))->first);
+        result = compare_and_print_map_results(file, std_map, ft_map);
+		print_result_cout(result, false);
+
+        ft_map.erase((--ft_map.end())->first);
+        std_map.erase((--std_map.end())->first);
+        result = compare_and_print_map_results(file, std_map, ft_map);
+		print_result_cout(result, false);
+
+        for (int i = 2; i < 6; ++i){
+             ft_map.erase(i);
+             std_map.erase(i);
+        }
+        result = compare_and_print_map_results(file, std_map, ft_map);
+		print_result_cout(result, false);
+
+        ft_map.erase(6);
+        std_map.erase(6);
+
+        ft_map.erase(7);
+        std_map.erase(7);
+
+        result = compare_and_print_map_results(file, std_map, ft_map);
+		print_result_cout(result, true);
+
     }
-
-
-
          
     file.close();
 
     return 0;
 }
-
-/*
-        typedef int type1;
-        typedef std::string type2;
-        typedef std::pair<type1, type2> std_pair_type;
-        typedef ft::pair<type1, type2> ft_pair_type;
-
-        std::map<type1, type2> std_map;
-               
-        typename std::map<type1, type2>::iterator std_it = std_map.begin();
-        typename std::map<type1, type2>::iterator std_ite = std_map.end();
-
-
-        ft::map<type1, type2> ft_map;
-        
-        typename ft::map<type1, type2>::iterator ft_it = ft_map.begin();
-        typename ft::map<type1, type2>::iterator ft_ite = ft_map.end();
-
-*/
