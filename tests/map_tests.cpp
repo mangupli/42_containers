@@ -6,7 +6,7 @@
 /*   By: mspyke <mspyke@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/03 17:55:16 by mspyke            #+#    #+#             */
-/*   Updated: 2022/08/10 16:52:54 by mspyke           ###   ########.fr       */
+/*   Updated: 2022/08/12 19:21:36 by mspyke           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,13 +64,13 @@ int	map_tests()
         
         std::vector<std_pair_type> std_vector;
 	   for (unsigned int i = 0; i < vector_size; ++i)
-		    std_vector.push_back(std_pair_type(vector_size - i, i));
+		    std_vector.push_back(std_pair_type(static_cast<int>(vector_size - i), i));
             
         std::map<type1, type2> std_map(std_vector.begin(), std_vector.end());
 
         ft::vector<ft_pair_type> ft_vector;
 	    for (unsigned int i = 0; i < vector_size; ++i)
-		    ft_vector.push_back(ft_pair_type(vector_size - i, i));
+		    ft_vector.push_back(ft_pair_type(static_cast<int>(vector_size - i), i));
 
         ft::map<type1, type2> ft_map(ft_vector.begin(), ft_vector.end());
 
@@ -256,17 +256,17 @@ int	map_tests()
         
         //insert (iterator first, iterator last);
 
-        int vector_size = 8;
+        size_t vector_size = 8;
 
         std::vector<std_pair_type> std_vector;
 	   for (unsigned int i = 0; i < vector_size; ++i)
-		    std_vector.push_back(std_pair_type(vector_size - i, "came from vector"));
+		    std_vector.push_back(std_pair_type(static_cast<int>(vector_size - i), "came from vector"));
             
         std_map.insert(std_vector.begin(), std_vector.end());
 
         ft::vector<ft_pair_type> ft_vector;
 	    for (unsigned int i = 0; i < vector_size; ++i)
-		    ft_vector.push_back(ft_pair_type(vector_size - i, "came from vector"));
+		    ft_vector.push_back(ft_pair_type(static_cast<int>(vector_size - i), "came from vector"));
 
         ft_map.insert(ft_vector.begin(), ft_vector.end());
 

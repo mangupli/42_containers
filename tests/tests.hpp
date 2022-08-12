@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tests.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mspyke <mspyke@student.21-school.ru >      +#+  +:+       +#+        */
+/*   By: mspyke <mspyke@student.21-school.ru>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 17:44:25 by mspyke            #+#    #+#             */
-/*   Updated: 2022/08/06 18:53:57 by mspyke           ###   ########.fr       */
+/*   Updated: 2022/08/12 19:18:43 by mspyke           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,6 @@ bool compare_value(const T& value1, const T& value2)
 
 void print_result_cout(const bool & result, const bool & new_line_needed);
 void print_result_file(std::fstream &file, const bool & result);
-
 
 int	stack_tests();
 int	vector_tests();
