@@ -1,6 +1,6 @@
 # 42_containers
 
-The project where we had to re-implement the data structures and their iterators of the standart library c++98:
+The project where we had to re-implement the data structures and their iterators of the standard library c++98:
 
 - Vector
 - Map
